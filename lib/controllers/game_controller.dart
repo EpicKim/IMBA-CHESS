@@ -35,6 +35,12 @@ class GameController extends ChangeNotifier {
   /// 上次触发技能选择的回合数（用于判断是否需要触发技能选择）
   int _lastSkillSelectionFullmove = -1;
 
+  /// 是否已完成初始技能选择（红方、黑方）
+  final Map<Side, bool> _initialSkillSelected = {
+    Side.red: false,
+    Side.black: false,
+  };
+
   /// 构造函数
   GameController()
       : _gameState = GameState.initial(),
@@ -72,9 +78,11 @@ class GameController extends ChangeNotifier {
     _gameState = GameState.initial();
     _uiState = const UIState();
     _lastSkillSelectionFullmove = -1;
+    _initialSkillSelected[Side.red] = false;
+    _initialSkillSelected[Side.black] = false;
     notifyListeners();
 
-    // 开局时，如果当前玩家是MePlayer，触发技能选择
+    // 开局时，触发技能选择（从红方开始）
     _checkAndStartSkillSelection();
   }
 
@@ -180,6 +188,9 @@ class GameController extends ChangeNotifier {
     // 清除选中状态
     _uiState = _uiState.copyWith(clearSelectedPiece: true);
 
+    // 立即通知UI更新，显示吃子效果
+    notifyListeners();
+
     // 检查游戏是否结束
     if (_gameState.isGameOver()) {
       _uiState = _uiState.copyWith(
@@ -190,18 +201,18 @@ class GameController extends ChangeNotifier {
       return;
     }
 
-    notifyListeners();
-
     // 检查是否需要触发技能选择（参考Lua: shouldTriggerSkillSelection）
     if (_lastSkillSelectionFullmove < _gameState.fullmoveCount) {
-      // 触发技能选择流程（只在当前玩家是MePlayer时）
+      // 触发技能选择流程
       _checkAndStartSkillSelection();
       return;
     }
 
-    // 如果下一个玩家是AI，执行AI回合
+    // 如果下一个玩家是AI，延迟执行AI回合（让UI先更新）
     if (currentPlayer?.isAI == true) {
-      _executeAITurn();
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _executeAITurn();
+      });
     }
   }
 
@@ -241,6 +252,20 @@ class GameController extends ChangeNotifier {
 
   /// 检查并开始技能选择流程（本地玩家和AI玩家都需要）
   void _checkAndStartSkillSelection() {
+    final currentSide = _gameState.sideToMove;
+
+    // 检查当前玩家是否已完成初始技能选择
+    if (_initialSkillSelected[currentSide] == true) {
+      // 已选择过初始技能，检查是否需要后续技能选择
+      if (_lastSkillSelectionFullmove >= _gameState.fullmoveCount) {
+        // 不需要技能选择，直接进入下棋阶段
+        if (currentPlayer?.isAI == true) {
+          _executeAITurn();
+        }
+        return;
+      }
+    }
+
     // 生成3张随机技能卡
     final availableSkills = _generateSkillCards();
 
@@ -294,6 +319,10 @@ class GameController extends ChangeNotifier {
 
           _gameState = _gameState.copyWith(board: newBoard);
 
+          // 标记当前阵营已完成初始技能选择
+          final currentSide = _gameState.sideToMove;
+          _initialSkillSelected[currentSide] = true;
+
           // 更新最后技能选择回合数
           _lastSkillSelectionFullmove = _gameState.fullmoveCount;
 
@@ -306,9 +335,25 @@ class GameController extends ChangeNotifier {
       _isAIThinking = false;
       notifyListeners();
 
-      // 如果下一个玩家也是AI，继续执行AI回合
-      if (currentPlayer?.isAI == true) {
-        _executeAITurn();
+      // 检查是否双方都完成了初始技能选择
+      final redDone = _initialSkillSelected[Side.red] ?? false;
+      final blackDone = _initialSkillSelected[Side.black] ?? false;
+
+      if (redDone && blackDone) {
+        // 双方都选完技能，如果当前玩家是AI，开始下棋
+        if (currentPlayer?.isAI == true) {
+          _executeAITurn();
+        }
+      } else {
+        // 还有玩家未选技能，切换到下一个玩家选技能
+        // 切换阵营
+        _gameState = _gameState.copyWith(
+          sideToMove: _gameState.sideToMove == Side.red ? Side.black : Side.red,
+        );
+        notifyListeners();
+
+        // 触发下一个玩家的技能选择
+        _checkAndStartSkillSelection();
       }
     }
   }
@@ -440,22 +485,49 @@ class GameController extends ChangeNotifier {
 
     _gameState = _gameState.copyWith(board: newBoard);
 
-    // 完成技能选择，回到对弈阶段
-    // 更新最后技能选择回合数（参考Lua: ui.lastFullmoveCount = state.fullmove_count）
+    // 标记当前阵营已完成初始技能选择
+    final currentSide = _gameState.sideToMove;
+    _initialSkillSelected[currentSide] = true;
+
+    // 更新最后技能选择回合数
     _lastSkillSelectionFullmove = _gameState.fullmoveCount;
 
-    _uiState = _uiState.copyWith(
-      phase: GamePhase.play,
-      availableSkills: [],
-      clearSelectedSkill: true,
-      message: '技能已赋予！',
-    );
+    // 检查是否双方都完成了初始技能选择
+    final redDone = _initialSkillSelected[Side.red] ?? false;
+    final blackDone = _initialSkillSelected[Side.black] ?? false;
 
-    notifyListeners();
+    if (redDone && blackDone) {
+      // 双方都选完技能，回到对弈阶段
+      _uiState = _uiState.copyWith(
+        phase: GamePhase.play,
+        availableSkills: [],
+        clearSelectedSkill: true,
+        message: '技能已赋予！双方开始对弈',
+      );
+      notifyListeners();
 
-    // 如果下一个玩家是AI，执行AI回合
-    if (currentPlayer?.isAI == true) {
-      _executeAITurn();
+      // 如果当前玩家是AI，执行AI回合
+      if (currentPlayer?.isAI == true) {
+        _executeAITurn();
+      }
+    } else {
+      // 还有玩家未选技能，切换到下一个玩家
+      _uiState = _uiState.copyWith(
+        phase: GamePhase.play,
+        availableSkills: [],
+        clearSelectedSkill: true,
+        message: '技能已赋予！等待对方选择技能',
+      );
+
+      // 切换阵营
+      _gameState = _gameState.copyWith(
+        sideToMove: _gameState.sideToMove == Side.red ? Side.black : Side.red,
+      );
+
+      notifyListeners();
+
+      // 触发下一个玩家的技能选择
+      _checkAndStartSkillSelection();
     }
   }
 

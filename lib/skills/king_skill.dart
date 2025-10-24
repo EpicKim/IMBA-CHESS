@@ -1,12 +1,16 @@
 // 将/帅技能走法生成器
 // 参考源文件: src/skills/king.lua
-// 走法规则: 只能在四个正方向走一步（上下左右）
+// 走法规则: 在四个正方向走一步（Imba象棋：无九宫格限制）
 
 import '../models/move.dart';
 import '../models/board.dart';
 import '../core/constants.dart';
 
 /// 将/帅技能走法生成函数
+///
+/// Imba象棋规则：
+/// 1. 只能在四个正方向走一步（上下左右）
+/// 2. 【无九宫格限制】- 可以在全棋盘范围内移动
 ///
 /// 参数:
 /// - state: 游戏状态对象
@@ -38,6 +42,7 @@ List<Move> generateKingMoves(dynamic state, int x, int y, Side side, dynamic pie
       continue;
     }
 
+    // Imba象棋特性：将/帅技能不受九宫格限制！
     // 获取目标位置的棋子
     final targetPiece = board.get(tx, ty);
 
