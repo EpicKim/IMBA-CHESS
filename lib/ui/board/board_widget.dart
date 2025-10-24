@@ -1,5 +1,4 @@
 // 棋盘交互组件
-// 参考源文件: src/areas/BoardArea.lua
 // 功能：结合棋盘绘制和用户交互
 
 import 'package:flutter/material.dart';
@@ -11,38 +10,25 @@ import '../../core/grid_system.dart';
 import '../../core/constants.dart';
 import 'board_painter.dart';
 
+/// 棋盘Widget配置常量
+class BoardWidgetConfig {
+  static const double boardPadding = 40.0; // 棋盘内边距
+  static const double boardSizeRatio = 0.85; // 棋盘占可用空间的比例
+}
+
 /// 棋盘交互组件
-///
-/// 将棋盘绘制和用户交互结合在一起
+/// 结合棋盘绘制和用户交互
 class BoardWidget extends StatefulWidget {
-  /// 棋盘数据
-  final Board board;
+  final Board board; // 棋盘数据
+  final Position? selectedPiece; // 选中的棋子位置
+  final List<Move> legalMoves; // 合法移动列表
+  final Move? lastMove; // 上一步移动
+  final Side? localPlayerSide; // 本地玩家阵营
+  final void Function(int x, int y)? onTap; // 点击回调
+  final GamePhase? gamePhase; // 游戏阶段
+  final Skill? selectedSkill; // 选中的技能
+  final Side? currentSide; // 当前行动方
 
-  /// 选中的棋子位置
-  final Position? selectedPiece;
-
-  /// 合法移动列表
-  final List<Move> legalMoves;
-
-  /// 上一步移动
-  final Move? lastMove;
-
-  /// 本地玩家阵营
-  final Side? localPlayerSide;
-
-  /// 点击回调
-  final void Function(int x, int y)? onTap;
-
-  /// 游戏阶段
-  final GamePhase? gamePhase;
-
-  /// 选中的技能
-  final Skill? selectedSkill;
-
-  /// 当前行动方
-  final Side? currentSide;
-
-  /// 构造函数
   const BoardWidget({
     super.key,
     required this.board,
@@ -60,18 +46,15 @@ class BoardWidget extends StatefulWidget {
   State<BoardWidget> createState() => _BoardWidgetState();
 }
 
-class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStateMixin {
-  /// 坐标系统
-  late GridSystem gridSystem;
-
-  /// 动画控制器（用于脉冲效果）
-  late AnimationController _animationController;
+class _BoardWidgetState extends State<BoardWidget>
+    with SingleTickerProviderStateMixin {
+  late GridSystem gridSystem; // 坐标系统
+  late AnimationController _animationController; // 动画控制器（用于脉冲效果）
 
   @override
   void initState() {
     super.initState();
     _initGridSystem();
-
     // 初始化动画控制器（循环动画）
     _animationController = AnimationController(
       vsync: this,
@@ -88,7 +71,6 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
   @override
   void didUpdateWidget(BoardWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     // 如果本地玩家阵营改变，重新初始化坐标系统
     if (oldWidget.localPlayerSide != widget.localPlayerSide) {
       _initGridSystem();
@@ -97,13 +79,11 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
 
   /// 初始化坐标系统
   void _initGridSystem() {
-    // 使用 LayoutBuilder 获取实际尺寸后初始化
-    // 这里先使用默认值，实际会在 build 中动态计算
     gridSystem = GridSystem(
-      boardOffset: const Offset(40, 40),
-      cellSize: 60.0,
+      boardOffset: const Offset(
+          BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
+      cellSize: 60.0, // 默认值，实际会在 build 中动态计算
     );
-
     if (widget.localPlayerSide != null) {
       gridSystem.setLocalPlayerSide(widget.localPlayerSide!);
     }
@@ -114,60 +94,69 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
     return LayoutBuilder(
       builder: (context, constraints) {
         // 根据可用空间计算棋盘尺寸
-        final availableWidth = constraints.maxWidth;
-        final availableHeight = constraints.maxHeight;
-
-        // 计算合适的格子大小
-        final cellSizeByWidth = (availableWidth - 80) / BoardConstants.boardWidth;
-        final cellSizeByHeight = (availableHeight - 80) / BoardConstants.boardHeight;
-        final cellSize = cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
-
-        // 计算棋盘偏移量（居中）
-        final boardWidth = BoardConstants.boardWidth * cellSize;
-        final boardHeight = BoardConstants.boardHeight * cellSize;
-        final offsetX = (availableWidth - boardWidth) / 2;
-        final offsetY = (availableHeight - boardHeight) / 2;
-
-        // 更新坐标系统
-        gridSystem = GridSystem(
-          boardOffset: Offset(offsetX, offsetY),
-          cellSize: cellSize,
-        );
-
-        if (widget.localPlayerSide != null) {
-          gridSystem.setLocalPlayerSide(widget.localPlayerSide!);
-        }
-
-        return GestureDetector(
-          onTapDown: _handleTapDown,
-          child: Container(
-            width: availableWidth,
-            height: availableHeight,
-            color: const Color(0xFF8B7355), // 边框颜色（深木色）
-            child: Center(
-              child: AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return CustomPaint(
-                    size: Size(availableWidth, availableHeight),
-                    painter: BoardPainter(
-                      board: widget.board,
-                      gridSystem: gridSystem,
-                      selectedPiece: widget.selectedPiece,
-                      legalMoves: widget.legalMoves,
-                      lastMove: widget.lastMove,
-                      gamePhase: widget.gamePhase,
-                      selectedSkill: widget.selectedSkill,
-                      currentSide: widget.currentSide,
-                      animationTime: _animationController.value * 2 * 3.14159, // 转换为弧度
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        );
+        final cellSize = _calculateCellSize(constraints);
+        final boardSize = _calculateBoardSize(cellSize);
+        _updateGridSystem(cellSize);
+        return _buildBoardContainer(boardSize);
       },
+    );
+  }
+
+  /// 计算格子大小（基于可用空间）
+  double _calculateCellSize(BoxConstraints constraints) {
+    final cellSizeByWidth =
+        (constraints.maxWidth * BoardWidgetConfig.boardSizeRatio) /
+            BoardConstants.boardWidth;
+    final cellSizeByHeight =
+        (constraints.maxHeight * BoardWidgetConfig.boardSizeRatio) /
+            BoardConstants.boardHeight;
+    return cellSizeByWidth < cellSizeByHeight
+        ? cellSizeByWidth
+        : cellSizeByHeight;
+  }
+
+  /// 计算棋盘实际尺寸（格子大小 × 格子数量 + 内边距）
+  Size _calculateBoardSize(double cellSize) {
+    final width = BoardConstants.boardWidth * cellSize +
+        BoardWidgetConfig.boardPadding * 2;
+    final height = BoardConstants.boardHeight * cellSize +
+        BoardWidgetConfig.boardPadding * 2;
+    return Size(width, height);
+  }
+
+  /// 更新坐标系统（boardOffset 只是棋盘内部边距）
+  void _updateGridSystem(double cellSize) {
+    gridSystem = GridSystem(
+      boardOffset: const Offset(
+          BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
+      cellSize: cellSize,
+    );
+    if (widget.localPlayerSide != null) {
+      gridSystem.setLocalPlayerSide(widget.localPlayerSide!);
+    }
+  }
+
+  /// 构建棋盘容器（返回固定尺寸的棋盘，让外层 Center 来居中）
+  Widget _buildBoardContainer(Size boardSize) {
+    return GestureDetector(
+      onTapDown: _handleTapDown,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) => CustomPaint(
+          size: boardSize,
+          painter: BoardPainter(
+            board: widget.board,
+            gridSystem: gridSystem,
+            selectedPiece: widget.selectedPiece,
+            legalMoves: widget.legalMoves,
+            lastMove: widget.lastMove,
+            gamePhase: widget.gamePhase,
+            selectedSkill: widget.selectedSkill,
+            currentSide: widget.currentSide,
+            animationTime: _animationController.value * 2 * 3.14159, // 转换为弧度
+          ),
+        ),
+      ),
     );
   }
 
@@ -178,9 +167,7 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
       details.localPosition.dx,
       details.localPosition.dy,
     );
-
     if (gridPos != null && widget.onTap != null) {
-      // 调用回调函数
       widget.onTap!(gridPos.x, gridPos.y);
     }
   }

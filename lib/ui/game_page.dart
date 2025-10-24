@@ -148,20 +148,22 @@ class _GamePageState extends State<GamePage> {
         // 中间：棋盘
         Expanded(
           flex: 5,
-          child: Consumer<GameController>(
-            builder: (context, controller, _) {
-              return BoardWidget(
-                board: controller.gameState.board,
-                selectedPiece: controller.uiState.selectedPiece,
-                legalMoves: controller.getSelectedPieceLegalMoves(),
-                lastMove: controller.gameState.history.lastOrNull,
-                localPlayerSide: Side.red, // 默认红方视角
-                onTap: (x, y) => controller.handleBoardTap(x, y),
-                gamePhase: controller.uiState.phase,
-                selectedSkill: controller.uiState.selectedSkill,
-                currentSide: controller.gameState.sideToMove,
-              );
-            },
+          child: Center(
+            child: Consumer<GameController>(
+              builder: (context, controller, _) {
+                return BoardWidget(
+                  board: controller.gameState.board,
+                  selectedPiece: controller.uiState.selectedPiece,
+                  legalMoves: controller.getSelectedPieceLegalMoves(),
+                  lastMove: controller.gameState.history.lastOrNull,
+                  localPlayerSide: Side.red, // 默认红方视角
+                  onTap: (x, y) => controller.handleBoardTap(x, y),
+                  gamePhase: controller.uiState.phase,
+                  selectedSkill: controller.uiState.selectedSkill,
+                  currentSide: controller.gameState.sideToMove,
+                );
+              },
+            ),
           ),
         ),
 
@@ -207,20 +209,22 @@ class _GamePageState extends State<GamePage> {
         // 棋盘
         Expanded(
           flex: 3,
-          child: Consumer<GameController>(
-            builder: (context, controller, _) {
-              return BoardWidget(
-                board: controller.gameState.board,
-                selectedPiece: controller.uiState.selectedPiece,
-                legalMoves: controller.getSelectedPieceLegalMoves(),
-                lastMove: controller.gameState.history.lastOrNull,
-                localPlayerSide: Side.red,
-                onTap: (x, y) => controller.handleBoardTap(x, y),
-                gamePhase: controller.uiState.phase,
-                selectedSkill: controller.uiState.selectedSkill,
-                currentSide: controller.gameState.sideToMove,
-              );
-            },
+          child: Center(
+            child: Consumer<GameController>(
+              builder: (context, controller, _) {
+                return BoardWidget(
+                  board: controller.gameState.board,
+                  selectedPiece: controller.uiState.selectedPiece,
+                  legalMoves: controller.getSelectedPieceLegalMoves(),
+                  lastMove: controller.gameState.history.lastOrNull,
+                  localPlayerSide: Side.red,
+                  onTap: (x, y) => controller.handleBoardTap(x, y),
+                  gamePhase: controller.uiState.phase,
+                  selectedSkill: controller.uiState.selectedSkill,
+                  currentSide: controller.gameState.sideToMove,
+                );
+              },
+            ),
           ),
         ),
 

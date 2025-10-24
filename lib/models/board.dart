@@ -165,8 +165,8 @@ class Board {
     set(8, 9, Piece.withSkills(2, Side.red, '车', const [SkillType.rook]));
 
     // 红方马（1,9）和（7,9）
-    set(1, 9, Piece.withSkills(3, Side.red, '馬', const [SkillType.knight]));
-    set(7, 9, Piece.withSkills(4, Side.red, '馬', const [SkillType.knight]));
+    set(1, 9, Piece.withSkills(3, Side.red, '马', const [SkillType.knight]));
+    set(7, 9, Piece.withSkills(4, Side.red, '马', const [SkillType.knight]));
 
     // 红方相（2,9）和（6,9）
     set(2, 9, Piece.withSkills(5, Side.red, '相', const [SkillType.bishop]));
@@ -177,7 +177,7 @@ class Board {
     set(5, 9, Piece.withSkills(8, Side.red, '士', const [SkillType.advisor]));
 
     // 红方帅（4,9）
-    set(4, 9, Piece.withSkills(9, Side.red, '帥', const [SkillType.king]));
+    set(4, 9, Piece.withSkills(9, Side.red, '帅', const [SkillType.king]));
 
     // 红方炮（1,7）和（7,7）
     set(1, 7, Piece.withSkills(10, Side.red, '炮', const [SkillType.cannon]));
@@ -198,8 +198,8 @@ class Board {
     set(8, 0, Piece.withSkills(18, Side.black, '车', const [SkillType.rook]));
 
     // 黑方马（1,0）和（7,0）
-    set(1, 0, Piece.withSkills(19, Side.black, '馬', const [SkillType.knight]));
-    set(7, 0, Piece.withSkills(20, Side.black, '馬', const [SkillType.knight]));
+    set(1, 0, Piece.withSkills(19, Side.black, '马', const [SkillType.knight]));
+    set(7, 0, Piece.withSkills(20, Side.black, '马', const [SkillType.knight]));
 
     // 黑方象（2,0）和（6,0）
     set(2, 0, Piece.withSkills(21, Side.black, '象', const [SkillType.bishop]));
@@ -210,7 +210,7 @@ class Board {
     set(5, 0, Piece.withSkills(24, Side.black, '士', const [SkillType.advisor]));
 
     // 黑方将（4,0）
-    set(4, 0, Piece.withSkills(25, Side.black, '將', const [SkillType.king]));
+    set(4, 0, Piece.withSkills(25, Side.black, '将', const [SkillType.king]));
 
     // 黑方炮（1,2）和（7,2）
     set(1, 2, Piece.withSkills(26, Side.black, '炮', const [SkillType.cannon]));

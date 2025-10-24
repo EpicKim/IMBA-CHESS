@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- 每行代码都写注释
+- 涉及到UI的要用`flutter_screenutil`

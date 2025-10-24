@@ -1,5 +1,4 @@
 // 棋子数据模型
-// 参考源文件: src/game/Piece.lua
 
 import 'package:equatable/equatable.dart';
 import '../core/constants.dart';
@@ -29,7 +28,8 @@ class Piece extends Equatable {
   /// - side: 所属阵营
   /// - label: 显示文字
   /// - skillTypes: 技能类型列表
-  factory Piece.withSkills(int id, Side side, String label, List<SkillType> skillTypes) {
+  factory Piece.withSkills(
+      int id, Side side, String label, List<SkillType> skillTypes) {
     // 将技能类型转换为技能实例
     final skills = skillTypes.map((type) => skillDefinitions[type]!).toList();
 
