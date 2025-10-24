@@ -272,9 +272,14 @@ class BoardPainter extends CustomPainter {
       final center = gridSystem.gridToScreen(move.to.x, move.to.y);
 
       if (move.isCapture) {
-        // 吃子：绘制红色空心圆
+        // 吃子：根据当前行动方使用不同颜色
+        // 红方吃子用红色，黑方吃子用绿色
+        final captureColor = currentSide == Side.red
+            ? Colors.red.withOpacity(0.9) // 红方用红色
+            : const Color(0xFF00FF00).withOpacity(0.9); // 黑方用绿色
+
         final capturePaint = Paint()
-          ..color = Colors.red.withOpacity(0.8)
+          ..color = captureColor
           ..style = PaintingStyle.stroke
           ..strokeWidth = gridSystem.cellSize * BoardUIConfig.captureDotWidth;
         canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.captureDotRadius, capturePaint);
