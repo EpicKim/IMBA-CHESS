@@ -9,7 +9,7 @@ import '../../models/game_state.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
 import '../../core/constants.dart';
-import '../../controllers/game_controller.dart';
+import '../../providers/game_provider.dart';
 
 /// 信息面板组件
 ///

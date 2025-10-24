@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../controllers/game_controller.dart';
+import '../providers/game_provider.dart';
 import 'board/board_widget.dart';
 import 'panels/info_panel.dart';
 import 'panels/skill_panel.dart';
