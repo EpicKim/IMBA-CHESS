@@ -1,0 +1,98 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "imba_chess (默认设备)",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "imba_chess (macOS)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "macos"
+            ]
+        },
+        {
+            "name": "imba_chess (Windows)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "windows"
+            ]
+        },
+        {
+            "name": "imba_chess (Linux)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "linux"
+            ]
+        },
+        {
+            "name": "imba_chess (Android)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "android"
+            ]
+        },
+        {
+            "name": "imba_chess (iOS)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "ios"
+            ]
+        },
+        {
+            "name": "imba_chess (macOS - Profile)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "-d",
+                "macos"
+            ]
+        },
+        {
+            "name": "imba_chess (Windows - Profile)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "-d",
+                "windows"
+            ]
+        },
+        {
+            "name": "imba_chess (macOS - Release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "-d",
+                "macos"
+            ]
+        },
+        {
+            "name": "imba_chess (Windows - Release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "-d",
+                "windows"
+            ]
+        }
+    ]
+}
