@@ -118,7 +118,7 @@ class SkillPanel extends StatelessWidget {
               ),
             ] else ...[
               SizedBox(
-                height: 300.h,
+                height: 480.h,
                 child: ListView.builder(
                   itemCount: availableSkills.length,
                   itemBuilder: (context, index) {
