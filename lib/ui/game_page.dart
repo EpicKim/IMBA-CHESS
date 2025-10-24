@@ -66,37 +66,6 @@ class _GamePageState extends State<GamePage> {
     return ChangeNotifierProvider.value(
       value: _gameController,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('IMBA象棋'),
-          centerTitle: true,
-          backgroundColor: const Color(0xFF8B7355),
-          actions: [
-            // 撤销按钮
-            Consumer<GameController>(
-              builder: (context, controller, _) {
-                return IconButton(
-                  icon: const Icon(Icons.undo),
-                  onPressed: controller.gameState.history.isEmpty ? null : () => controller.undoMove(),
-                  tooltip: '悔棋',
-                );
-              },
-            ),
-
-            // 重新开始按钮
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => _showRestartDialog(),
-              tooltip: '重新开始',
-            ),
-
-            // 设置按钮
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () => _showSettingsDialog(),
-              tooltip: '设置',
-            ),
-          ],
-        ),
         body: Container(
           color: const Color(0xFFF5F5DC),
           child: LayoutBuilder(
@@ -132,12 +101,13 @@ class _GamePageState extends State<GamePage> {
                 // 信息面板
                 Consumer<GameController>(
                   builder: (context, controller, _) {
-                    final selectedPiece = controller.uiState.selectedPiece != null
-                        ? controller.gameState.board.get(
-                            controller.uiState.selectedPiece!.x,
-                            controller.uiState.selectedPiece!.y,
-                          )
-                        : null;
+                    final selectedPiece =
+                        controller.uiState.selectedPiece != null
+                            ? controller.gameState.board.get(
+                                controller.uiState.selectedPiece!.x,
+                                controller.uiState.selectedPiece!.y,
+                              )
+                            : null;
 
                     return InfoPanel(
                       gameState: controller.gameState,
@@ -160,7 +130,8 @@ class _GamePageState extends State<GamePage> {
                             children: [
                               const CircularProgressIndicator(),
                               SizedBox(width: 16.w),
-                              Text('AI思考中...', style: TextStyle(fontSize: 20.sp)),
+                              Text('AI思考中...',
+                                  style: TextStyle(fontSize: 20.sp)),
                             ],
                           ),
                         ),
@@ -197,20 +168,32 @@ class _GamePageState extends State<GamePage> {
         // 右侧面板
         Expanded(
           flex: 2,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.w),
-            child: Consumer<GameController>(
-              builder: (context, controller, _) {
-                return SkillPanel(
-                  availableSkills: controller.uiState.availableSkills,
-                  selectedSkill: controller.uiState.selectedSkill,
-                  isSelecting: controller.uiState.phase == GamePhase.selectSkill,
-                  message: controller.uiState.message ?? '',
-                  currentSide: controller.gameState.sideToMove,
-                  onSkillSelected: (skill) => controller.selectSkillCard(skill),
-                );
-              },
-            ),
+          child: Column(
+            children: [
+              // 技能面板
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 16.w),
+                  child: Consumer<GameController>(
+                    builder: (context, controller, _) {
+                      return SkillPanel(
+                        availableSkills: controller.uiState.availableSkills,
+                        selectedSkill: controller.uiState.selectedSkill,
+                        isSelecting:
+                            controller.uiState.phase == GamePhase.selectSkill,
+                        message: controller.uiState.message ?? '',
+                        currentSide: controller.gameState.sideToMove,
+                        onSkillSelected: (skill) =>
+                            controller.selectSkillCard(skill),
+                      );
+                    },
+                  ),
+                ),
+              ),
+
+              // 操作按钮区域
+              _buildActionButtons(),
+            ],
           ),
         ),
       ],
@@ -283,8 +266,12 @@ class _GamePageState extends State<GamePage> {
                           ),
                           _buildInfoChip(
                             '行动方',
-                            controller.gameState.sideToMove == Side.red ? '红' : '黑',
-                            color: controller.gameState.sideToMove == Side.red ? Colors.red : Colors.blueGrey,
+                            controller.gameState.sideToMove == Side.red
+                                ? '红'
+                                : '黑',
+                            color: controller.gameState.sideToMove == Side.red
+                                ? Colors.red
+                                : Colors.black,
                           ),
                           if (selectedPiece != null)
                             _buildInfoChip(
@@ -300,6 +287,9 @@ class _GamePageState extends State<GamePage> {
             },
           ),
         ),
+
+        // 操作按钮区域
+        _buildActionButtons(),
       ],
     );
   }
@@ -313,6 +303,101 @@ class _GamePageState extends State<GamePage> {
         color: color ?? Colors.black,
         fontWeight: FontWeight.bold,
         fontSize: 18.sp,
+      ),
+    );
+  }
+
+  /// 构建操作按钮
+  Widget _buildActionButtons() {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5DC),
+        border: Border(
+          top: BorderSide(
+            color: const Color(0xFF8B7355).withOpacity(0.3),
+            width: 2,
+          ),
+        ),
+      ),
+      child: Consumer<GameController>(
+        builder: (context, controller, _) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // 悔棋按钮
+              Expanded(
+                child: _buildActionButton(
+                  icon: Icons.undo,
+                  label: '悔棋',
+                  color: const Color(0xFF8B7355),
+                  onPressed: controller.gameState.history.isEmpty
+                      ? null
+                      : () => controller.undoMove(),
+                ),
+              ),
+              SizedBox(width: 12.w),
+
+              // 重新开始按钮
+              Expanded(
+                child: _buildActionButton(
+                  icon: Icons.refresh,
+                  label: '重新开始',
+                  color: const Color(0xFF8B7355),
+                  onPressed: () => _showRestartDialog(),
+                ),
+              ),
+              SizedBox(width: 12.w),
+
+              // 设置按钮
+              Expanded(
+                child: _buildActionButton(
+                  icon: Icons.settings,
+                  label: '设置',
+                  color: const Color(0xFF8B7355),
+                  onPressed: () => _showSettingsDialog(),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  /// 构建单个操作按钮
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback? onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        disabledBackgroundColor: Colors.grey.shade300,
+        disabledForegroundColor: Colors.grey.shade500,
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        elevation: 3,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 28.sp),
+          SizedBox(height: 4.h),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

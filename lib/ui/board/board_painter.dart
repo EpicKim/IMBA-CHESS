@@ -245,7 +245,9 @@ class BoardPainter extends CustomPainter {
       final center = gridSystem.gridToScreen(move.to.x, move.to.y);
 
       // 如果是吃子，绘制大圆圈；否则绘制小圆点，基于cellSize动态计算
-      final radius = move.isCapture ? gridSystem.cellSize * 0.4 : gridSystem.cellSize * 0.13;
+      final radius = move.isCapture
+          ? gridSystem.cellSize * 0.4
+          : gridSystem.cellSize * 0.13;
 
       if (move.isCapture) {
         // 吃子：绘制空心圆
@@ -268,7 +270,11 @@ class BoardPainter extends CustomPainter {
 
         if (piece != null) {
           // 检查是否在技能赋予阶段需要绘制蓝色光圈提示
-          if (gamePhase == GamePhase.selectPiece && selectedSkill != null && currentSide != null && piece.side == currentSide && !piece.hasSkill(selectedSkill!.typeId)) {
+          if (gamePhase == GamePhase.selectPiece &&
+              selectedSkill != null &&
+              currentSide != null &&
+              piece.side == currentSide &&
+              !piece.hasSkill(selectedSkill!.typeId)) {
             // 绘制蓝色脉冲光圈（参考Lua: 多层蓝色光晕效果）
             _drawSkillApplicableHalo(canvas, x, y);
           }
@@ -327,7 +333,9 @@ class BoardPainter extends CustomPainter {
 
     // 绘制棋子底色
     final bgPaint = Paint()
-      ..color = piece.side == Side.red ? const Color(0xFFFF6B6B) : const Color(0xFF4ECDC4)
+      ..color = piece.side == Side.red
+          ? const Color(0xFFFF6B6B)
+          : const Color(0xFF2C2C2C)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius, bgPaint);
@@ -368,7 +376,8 @@ class BoardPainter extends CustomPainter {
     );
 
     // 绘制额外技能徽章（参考Lua: 跳过主技能，绘制其他技能）
-    final extraSkills = piece.skillsList.length > 1 ? piece.skillsList.sublist(1) : <Skill>[];
+    final extraSkills =
+        piece.skillsList.length > 1 ? piece.skillsList.sublist(1) : <Skill>[];
 
     for (var i = 0; i < extraSkills.length; i++) {
       final skill = extraSkills[i];
