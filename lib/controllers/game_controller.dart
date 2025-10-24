@@ -340,7 +340,13 @@ class GameController extends ChangeNotifier {
       final blackDone = _initialSkillSelected[Side.black] ?? false;
 
       if (redDone && blackDone) {
-        // 双方都选完技能，如果当前玩家是AI，开始下棋
+        // 双方都选完技能，强制切换到红方先下棋
+        _gameState = _gameState.copyWith(
+          sideToMove: Side.red,
+        );
+        notifyListeners();
+
+        // 如果红方是AI，开始下棋
         if (currentPlayer?.isAI == true) {
           _executeAITurn();
         }
@@ -497,16 +503,20 @@ class GameController extends ChangeNotifier {
     final blackDone = _initialSkillSelected[Side.black] ?? false;
 
     if (redDone && blackDone) {
-      // 双方都选完技能，回到对弈阶段
+      // 双方都选完技能，强制切换到红方先下棋
+      _gameState = _gameState.copyWith(
+        sideToMove: Side.red,
+      );
+
       _uiState = _uiState.copyWith(
         phase: GamePhase.play,
         availableSkills: [],
         clearSelectedSkill: true,
-        message: '技能已赋予！双方开始对弈',
+        message: '技能已赋予！双方开始对弈，红方先动',
       );
       notifyListeners();
 
-      // 如果当前玩家是AI，执行AI回合
+      // 如果红方是AI，执行AI回合
       if (currentPlayer?.isAI == true) {
         _executeAITurn();
       }
