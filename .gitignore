@@ -203,3 +203,29 @@ TODO.md
 
 # 调试文件
 *.hprof
+
+# ===== 需要添加的文件 =====
+# Android 本地配置（包含本地SDK路径）
+android/local.properties
+
+# iOS Flutter 生成的文件
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+
+# macOS Flutter 生成的文件
+macos/Flutter/ephemeral/
+macos/Flutter/GeneratedPluginRegistrant.swift
+
+# 其他平台的 ephemeral 文件夹
+linux/flutter/ephemeral/
+windows/flutter/ephemeral/
+
+# 生成的插件注册文件
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugins.cmake
