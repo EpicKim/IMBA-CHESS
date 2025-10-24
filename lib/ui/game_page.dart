@@ -39,17 +39,17 @@ class _GamePageState extends State<GamePage> {
 
     // 设置玩家（默认：AI vs 玩家）
     _gameProvider.setPlayers(
-      AIPlayer(
-        id: 'ai',
-        name: 'AI',
-        side: Side.red,
-        difficultyLevel: 3,
-        thinkingTime: 3000,
-      ),
       MePlayer(
         id: 'me',
         name: '玩家',
+        side: Side.red,
+      ),
+      AIPlayer(
+        id: 'ai',
+        name: 'AI',
         side: Side.black,
+        difficultyLevel: 3,
+        thinkingTime: 3000,
       ),
     );
   }

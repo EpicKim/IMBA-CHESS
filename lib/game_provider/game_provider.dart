@@ -3,6 +3,7 @@
 // 功能：统一管理游戏流程、玩家交互、状态转换、玩家数据
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'game_state.dart';
 import '../players/player.dart';
 import '../models/move.dart';
@@ -496,8 +497,11 @@ class GameProvider extends ChangeNotifier {
   /// 切换到下一个玩家（仅在下棋阶段使用）
   void _switchToNextPlayer() {
     // 注意：applyMove 已经切换了 sideToMove，所以这里不需要再切换
-    // 直接请求下一个玩家（currentPlayer 已经是下一个玩家了）走棋
-    _requestPlayerMove();
+    // 使用帧回调确保当前帧完成渲染后再请求下一个玩家行动
+    // 这样可以让UI先更新显示上一个玩家的移动，再开始AI思考
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _requestPlayerMove();
+    });
   }
 
   /// 准备进入下一轮（从技能选择重新开始）
