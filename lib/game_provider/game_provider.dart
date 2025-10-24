@@ -4,7 +4,6 @@
 
 import 'package:flutter/foundation.dart';
 import '../models/game_state.dart';
-import '../models/game_phase.dart';
 import '../players/player.dart';
 import '../models/move.dart';
 import '../models/skill.dart';
@@ -12,19 +11,10 @@ import '../models/piece.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
 import '../skills/skill_types.dart';
+import 'ui_state.dart';
 
-/// 回合阶段枚举
-/// 用于管理一个完整回合的流程
-enum TurnPhase {
-  /// 技能选择阶段（双方同时选择技能，不分先后）
-  skillSelection,
-
-  /// 技能显示阶段（双方选择完成后，显示对方选择的技能）
-  skillReveal,
-
-  /// 下棋阶段（红方先动，黑方后动）
-  playing,
-}
+// 导出游戏状态类型，方便其他文件使用
+export 'ui_state.dart';
 
 /// 游戏Provider
 ///
@@ -183,7 +173,7 @@ class GameProvider extends ChangeNotifier {
   void handleBoardTap(int x, int y) {
     // 根据当前阶段处理点击
     switch (_uiState.phase) {
-      case GamePhase.play:
+      case TurnPhase.playing:
         // 下棋阶段：只有当前玩家是本地玩家时才能操作
         if (currentPlayer?.isMe != true) {
           return;
@@ -191,7 +181,7 @@ class GameProvider extends ChangeNotifier {
         _handlePlayPhaseTap(x, y);
         break;
 
-      case GamePhase.selectPiece:
+      case TurnPhase.selectPiece:
         // 技能赋予阶段：只有本地玩家能操作
         if (localPlayer == null) {
           return;
@@ -199,12 +189,16 @@ class GameProvider extends ChangeNotifier {
         _handleSelectPiecePhaseTap(x, y);
         break;
 
-      case GamePhase.selectSkill:
+      case TurnPhase.skillSelection:
         // 技能选择阶段不处理棋盘点击
         break;
 
-      case GamePhase.gameOver:
+      case TurnPhase.gameOver:
         // 游戏结束阶段不处理点击
+        break;
+
+      case TurnPhase.skillReveal:
+        // 技能显示阶段不处理点击
         break;
     }
   }
@@ -224,8 +218,7 @@ class GameProvider extends ChangeNotifier {
         selectedPos.y,
       );
 
-      final targetMove =
-          legalMoves.where((m) => m.to.x == x && m.to.y == y).firstOrNull;
+      final targetMove = legalMoves.where((m) => m.to.x == x && m.to.y == y).firstOrNull;
 
       if (targetMove != null) {
         // 执行移动（所有玩家统一处理）
@@ -290,7 +283,7 @@ class GameProvider extends ChangeNotifier {
     // 检查游戏是否结束
     if (_gameState.isGameOver()) {
       _uiState = _uiState.copyWith(
-        phase: GamePhase.gameOver,
+        phase: TurnPhase.gameOver,
         message: _getGameOverMessage(),
       );
       notifyListeners();
@@ -319,7 +312,7 @@ class GameProvider extends ChangeNotifier {
     _gameState = _gameState.undoMove();
     _uiState = _uiState.copyWith(
       clearSelectedPiece: true,
-      phase: GamePhase.play,
+      phase: TurnPhase.playing,
     );
     notifyListeners();
   }
@@ -379,7 +372,7 @@ class GameProvider extends ChangeNotifier {
 
     // 更新UI显示技能显示阶段
     _uiState = _uiState.copyWith(
-      phase: GamePhase.play,
+      phase: TurnPhase.playing,
       message: '双方技能已显示！',
     );
     notifyListeners();
@@ -402,7 +395,7 @@ class GameProvider extends ChangeNotifier {
 
     // 更新UI状态为下棋阶段
     _uiState = _uiState.copyWith(
-      phase: GamePhase.play,
+      phase: TurnPhase.playing,
       message: '下棋阶段开始，红方先走',
     );
     notifyListeners();
@@ -422,7 +415,7 @@ class GameProvider extends ChangeNotifier {
     // 如果是本地玩家，显示技能选择UI，让UI处理技能选择和棋子选择
     if (player.isMe) {
       _uiState = _uiState.copyWith(
-        phase: GamePhase.selectSkill,
+        phase: TurnPhase.skillSelection,
         availableSkills: availableSkills,
         clearSelectedSkill: true,
         message: '请选择一个技能',
@@ -462,12 +455,10 @@ class GameProvider extends ChangeNotifier {
           // 标记该方已完成技能选择
           _skillSelectedThisRound[side] = true;
 
-          print(
-              '[GameProvider] ${side == Side.red ? "红方" : "黑方"} 已选择技能: ${selectedSkill.name}');
+          print('[GameProvider] ${side == Side.red ? "红方" : "黑方"} 已选择技能: ${selectedSkill.name}');
 
           // 检查是否双方都选完了
-          if (_skillSelectedThisRound[Side.red]! &&
-              _skillSelectedThisRound[Side.black]!) {
+          if (_skillSelectedThisRound[Side.red]! && _skillSelectedThisRound[Side.black]!) {
             // 双方都选完了，进入技能显示阶段
             _turnPhase = TurnPhase.skillReveal;
             _startSkillRevealPhase();
@@ -522,8 +513,7 @@ class GameProvider extends ChangeNotifier {
 
   /// 为技能选择最佳棋子
   /// 优先级：车 > 马 > 炮 > 其他
-  ({Piece piece, int x, int y})? _findBestPieceForSkill(
-      Skill skill, Side side) {
+  ({Piece piece, int x, int y})? _findBestPieceForSkill(Skill skill, Side side) {
     final board = _gameState.board;
 
     // 收集所有己方棋子
@@ -576,8 +566,7 @@ class GameProvider extends ChangeNotifier {
 
     // 随机选择3个不重复的技能
     while (skills.length < 3 && selected.length < allSkillTypes.length) {
-      final randomIndex =
-          DateTime.now().millisecondsSinceEpoch % allSkillTypes.length;
+      final randomIndex = DateTime.now().millisecondsSinceEpoch % allSkillTypes.length;
       final skillType = allSkillTypes[randomIndex];
 
       if (!selected.contains(skillType)) {
@@ -591,14 +580,14 @@ class GameProvider extends ChangeNotifier {
 
   /// 选择技能卡（由UI调用，仅用于本地玩家）
   void selectSkillCard(Skill skill) {
-    if (_uiState.phase != GamePhase.selectSkill) {
+    if (_uiState.phase != TurnPhase.skillSelection) {
       return;
     }
 
     // 记录选中的技能
     _uiState = _uiState.copyWith(
       selectedSkill: skill,
-      phase: GamePhase.selectPiece,
+      phase: TurnPhase.selectPiece,
       message: '请点击一个己方棋子来赋予该技能',
     );
 
@@ -648,7 +637,7 @@ class GameProvider extends ChangeNotifier {
 
     // 更新UI显示等待对方
     _uiState = _uiState.copyWith(
-      phase: GamePhase.play,
+      phase: TurnPhase.playing,
       availableSkills: [],
       clearSelectedSkill: true,
       message: '技能已选择！等待对方选择技能...',
@@ -656,8 +645,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
 
     // 检查是否双方都选完了
-    if (_skillSelectedThisRound[Side.red]! &&
-        _skillSelectedThisRound[Side.black]!) {
+    if (_skillSelectedThisRound[Side.red]! && _skillSelectedThisRound[Side.black]!) {
       // 双方都选完了，进入技能显示阶段
       _turnPhase = TurnPhase.skillReveal;
       _startSkillRevealPhase();
@@ -684,8 +672,7 @@ class GameProvider extends ChangeNotifier {
 
     _gameState = _gameState.copyWith(board: newBoard);
 
-    print(
-        '[GameProvider] ${side == Side.red ? "红方" : "黑方"} 的技能 ${skill.name} 已应用到位置($x, $y)的棋子');
+    print('[GameProvider] ${side == Side.red ? "红方" : "黑方"} 的技能 ${skill.name} 已应用到位置($x, $y)的棋子');
   }
 
   /// 获取游戏结束消息

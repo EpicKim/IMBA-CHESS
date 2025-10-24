@@ -7,7 +7,7 @@ import '../../models/board.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
 import '../../models/skill.dart';
-import '../../models/game_phase.dart';
+import '../../game_provider/game_provider.dart';
 import '../../core/constants.dart';
 import '../../core/grid_system.dart';
 
@@ -18,8 +18,7 @@ class BoardUIConfig {
   static const Color boardBorderColor = Colors.black; // 棋盘边框颜色
   static const Color redPieceColor = Color(0xFFFF6B6B); // 红方棋子颜色
   static const Color blackPieceColor = Color(0xFF2C2C2C); // 黑方棋子颜色
-  static const Color skillBadgeColor =
-      Color.fromRGBO(255, 217, 51, 0.9); // 技能徽章颜色
+  static const Color skillBadgeColor = Color.fromRGBO(255, 217, 51, 0.9); // 技能徽章颜色
 
   // 高亮颜色
   static const Color selectedHighlightColor = Colors.green; // 选中棋子的高亮颜色
@@ -50,7 +49,7 @@ class BoardPainter extends CustomPainter {
   final Position? selectedPiece; // 选中的棋子位置
   final List<Move> legalMoves; // 合法移动列表
   final Move? lastMove; // 上一步移动
-  final GamePhase? gamePhase; // 游戏阶段
+  final TurnPhase? gamePhase; // 游戏阶段
   final Skill? selectedSkill; // 选中的技能
   final Side? currentSide; // 当前行动方
   final Side? localPlayerSide; // 本地玩家阵营（用于判断技能赋予时的可选棋子）
@@ -264,8 +263,7 @@ class BoardPainter extends CustomPainter {
 
   /// 绘制合法移动提示
   void _drawLegalMoveHints(Canvas canvas, List<Move> moves) {
-    final paint = Paint()
-      ..color = BoardUIConfig.legalMoveHintColor.withOpacity(0.5);
+    final paint = Paint()..color = BoardUIConfig.legalMoveHintColor.withOpacity(0.5);
 
     for (final move in moves) {
       final center = gridSystem.gridToScreen(move.to.x, move.to.y);
@@ -274,13 +272,11 @@ class BoardPainter extends CustomPainter {
         // 吃子：绘制空心圆
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = gridSystem.cellSize * BoardUIConfig.captureDotWidth;
-        canvas.drawCircle(center,
-            gridSystem.cellSize * BoardUIConfig.captureDotRadius, paint);
+        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.captureDotRadius, paint);
       } else {
         // 移动：绘制实心圆
         paint.style = PaintingStyle.fill;
-        canvas.drawCircle(
-            center, gridSystem.cellSize * BoardUIConfig.moveDotRadius, paint);
+        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.moveDotRadius, paint);
       }
     }
   }
@@ -294,11 +290,7 @@ class BoardPainter extends CustomPainter {
         if (piece != null) {
           // 检查是否在技能赋予阶段需要绘制蓝色光圈提示
           // 只有在selectPiece阶段（已选择技能卡，正在选择棋子）且是本地玩家的棋子时才显示
-          if (gamePhase == GamePhase.selectPiece &&
-              selectedSkill != null &&
-              localPlayerSide != null &&
-              piece.side == localPlayerSide &&
-              !piece.hasSkill(selectedSkill!.typeId)) {
+          if (gamePhase == TurnPhase.selectPiece && selectedSkill != null && localPlayerSide != null && piece.side == localPlayerSide && !piece.hasSkill(selectedSkill!.typeId)) {
             // 绘制蓝色光圈提示该棋子可以被赋予技能
             _drawSkillApplicableHalo(canvas, x, y);
           }
@@ -355,9 +347,7 @@ class BoardPainter extends CustomPainter {
 
     // 绘制棋子底色
     final bgPaint = Paint()
-      ..color = piece.side == Side.red
-          ? BoardUIConfig.redPieceColor
-          : BoardUIConfig.blackPieceColor
+      ..color = piece.side == Side.red ? BoardUIConfig.redPieceColor : BoardUIConfig.blackPieceColor
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius, bgPaint);
@@ -404,11 +394,9 @@ class BoardPainter extends CustomPainter {
   }
 
   /// 绘制技能徽章
-  void _drawSkillBadges(
-      Canvas canvas, Piece piece, Offset center, double pieceRadius) {
+  void _drawSkillBadges(Canvas canvas, Piece piece, Offset center, double pieceRadius) {
     // 获取额外技能（跳过主技能，绘制其他技能）
-    final extraSkills =
-        piece.skillsList.length > 1 ? piece.skillsList.sublist(1) : <Skill>[];
+    final extraSkills = piece.skillsList.length > 1 ? piece.skillsList.sublist(1) : <Skill>[];
 
     for (var i = 0; i < extraSkills.length; i++) {
       final skill = extraSkills[i];

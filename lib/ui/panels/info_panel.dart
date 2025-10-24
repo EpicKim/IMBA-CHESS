@@ -9,7 +9,7 @@ import '../../models/game_state.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
 import '../../core/constants.dart';
-import '../../providers/game_provider.dart';
+import '../../game_provider/game_provider.dart';
 
 /// 信息面板组件
 ///
@@ -65,9 +65,7 @@ class InfoPanel extends StatelessWidget {
             _buildInfoRow(
               '行动方',
               '${gameState.sideToMove == Side.red ? '红方' : '黑方'}${currentPlayer != null ? ' (${currentPlayer.name})' : ''}',
-              color: gameState.sideToMove == Side.red
-                  ? Colors.red
-                  : Colors.blueGrey,
+              color: gameState.sideToMove == Side.red ? Colors.red : Colors.blueGrey,
             ),
 
             SizedBox(height: 8.h),
@@ -79,9 +77,7 @@ class InfoPanel extends StatelessWidget {
               _buildInfoRow(
                 '选中棋子',
                 selectedPiece!.label ?? '?',
-                color: selectedPiece!.side == Side.red
-                    ? Colors.red
-                    : Colors.blueGrey,
+                color: selectedPiece!.side == Side.red ? Colors.red : Colors.blueGrey,
               ),
               _buildInfoRow(
                 '技能数量',

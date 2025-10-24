@@ -5,13 +5,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../providers/game_provider.dart';
+import '../game_provider/game_provider.dart';
 import 'board/board_widget.dart';
 import 'panels/info_panel.dart';
 import 'panels/skill_panel.dart';
 import '../players/me_player.dart';
 import '../players/ai_player.dart';
-import '../models/game_phase.dart';
 import '../core/constants.dart';
 
 /// 游戏主页面
@@ -102,13 +101,12 @@ class _GamePageState extends State<GamePage> {
                 // 信息面板
                 Consumer<GameProvider>(
                   builder: (context, controller, _) {
-                    final selectedPiece =
-                        controller.uiState.selectedPiece != null
-                            ? controller.gameState.board.get(
-                                controller.uiState.selectedPiece!.x,
-                                controller.uiState.selectedPiece!.y,
-                              )
-                            : null;
+                    final selectedPiece = controller.uiState.selectedPiece != null
+                        ? controller.gameState.board.get(
+                            controller.uiState.selectedPiece!.x,
+                            controller.uiState.selectedPiece!.y,
+                          )
+                        : null;
 
                     return InfoPanel(
                       gameState: controller.gameState,
@@ -131,8 +129,7 @@ class _GamePageState extends State<GamePage> {
                             children: [
                               const CircularProgressIndicator(),
                               SizedBox(width: 16.w),
-                              Text('等待玩家操作中...',
-                                  style: TextStyle(fontSize: 20.sp)),
+                              Text('等待玩家操作中...', style: TextStyle(fontSize: 20.sp)),
                             ],
                           ),
                         ),
@@ -157,8 +154,7 @@ class _GamePageState extends State<GamePage> {
                   selectedPiece: controller.uiState.selectedPiece,
                   legalMoves: controller.getSelectedPieceLegalMoves(),
                   lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide:
-                      controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
+                  localPlayerSide: controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
                   onTap: (x, y) => controller.handleBoardTap(x, y),
                   gamePhase: controller.uiState.phase,
                   selectedSkill: controller.uiState.selectedSkill,
@@ -183,12 +179,10 @@ class _GamePageState extends State<GamePage> {
                       return SkillPanel(
                         availableSkills: controller.uiState.availableSkills,
                         selectedSkill: controller.uiState.selectedSkill,
-                        isSelecting:
-                            controller.uiState.phase == GamePhase.selectSkill,
+                        isSelecting: controller.uiState.phase == TurnPhase.skillSelection,
                         message: controller.uiState.message ?? '',
                         currentSide: controller.gameState.sideToMove,
-                        onSkillSelected: (skill) =>
-                            controller.selectSkillCard(skill),
+                        onSkillSelected: (skill) => controller.selectSkillCard(skill),
                       );
                     },
                   ),
@@ -219,8 +213,7 @@ class _GamePageState extends State<GamePage> {
                   selectedPiece: controller.uiState.selectedPiece,
                   legalMoves: controller.getSelectedPieceLegalMoves(),
                   lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide:
-                      controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
+                  localPlayerSide: controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
                   onTap: (x, y) => controller.handleBoardTap(x, y),
                   gamePhase: controller.uiState.phase,
                   selectedSkill: controller.uiState.selectedSkill,
@@ -256,8 +249,7 @@ class _GamePageState extends State<GamePage> {
                           children: [
                             const CircularProgressIndicator(),
                             SizedBox(width: 16.w),
-                            Text('等待玩家操作中...',
-                                style: TextStyle(fontSize: 20.sp)),
+                            Text('等待玩家操作中...', style: TextStyle(fontSize: 20.sp)),
                           ],
                         ),
                       ),
@@ -274,12 +266,8 @@ class _GamePageState extends State<GamePage> {
                           ),
                           _buildInfoChip(
                             '行动方',
-                            controller.gameState.sideToMove == Side.red
-                                ? '红'
-                                : '黑',
-                            color: controller.gameState.sideToMove == Side.red
-                                ? Colors.red
-                                : Colors.black,
+                            controller.gameState.sideToMove == Side.red ? '红' : '黑',
+                            color: controller.gameState.sideToMove == Side.red ? Colors.red : Colors.black,
                           ),
                           if (selectedPiece != null)
                             _buildInfoChip(
@@ -339,9 +327,7 @@ class _GamePageState extends State<GamePage> {
                   icon: Icons.undo,
                   label: '悔棋',
                   color: const Color(0xFF8B7355),
-                  onPressed: controller.gameState.history.isEmpty
-                      ? null
-                      : () => controller.undoMove(),
+                  onPressed: controller.gameState.history.isEmpty ? null : () => controller.undoMove(),
                 ),
               ),
               SizedBox(width: 12.w),

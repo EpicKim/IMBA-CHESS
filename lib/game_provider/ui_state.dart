@@ -1,22 +1,23 @@
-// 游戏阶段枚举
-// 参考源文件: src/stages/StageConstants.lua
-// 功能：定义游戏的不同阶段
+// 游戏状态类型定义
+// 功能：定义游戏回合阶段和UI状态
 
-import 'move.dart';
-import 'skill.dart';
+import '../models/move.dart';
+import '../models/skill.dart';
 
-/// 游戏阶段枚举
-///
-/// 定义游戏过程中的各个阶段
-enum GamePhase {
-  /// 正常对局阶段
-  play,
-
-  /// 技能选择阶段
-  selectSkill,
+/// 回合阶段枚举
+/// 用于管理一个完整回合的流程
+enum TurnPhase {
+  /// 技能选择阶段（双方同时选择技能，不分先后）
+  skillSelection,
 
   /// 棋子选择阶段（技能应用目标）
   selectPiece,
+
+  /// 技能显示阶段（双方选择完成后，显示对方选择的技能）
+  skillReveal,
+
+  /// 下棋阶段（红方先动，黑方后动）
+  playing,
 
   /// 游戏结束阶段
   gameOver,
@@ -27,7 +28,7 @@ enum GamePhase {
 /// 存储当前UI相关的状态信息
 class UIState {
   /// 当前游戏阶段
-  final GamePhase phase;
+  final TurnPhase phase;
 
   /// 选中的棋子位置
   final Position? selectedPiece;
@@ -43,7 +44,7 @@ class UIState {
 
   /// 构造函数
   const UIState({
-    this.phase = GamePhase.play,
+    this.phase = TurnPhase.playing,
     this.selectedPiece,
     this.availableSkills = const [],
     this.selectedSkill,
@@ -52,7 +53,7 @@ class UIState {
 
   /// 创建副本
   UIState copyWith({
-    GamePhase? phase,
+    TurnPhase? phase,
     Position? selectedPiece,
     bool clearSelectedPiece = false,
     List<Skill>? availableSkills,

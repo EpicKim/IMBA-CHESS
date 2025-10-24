@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../models/board.dart';
 import '../../models/move.dart';
 import '../../models/skill.dart';
-import '../../models/game_phase.dart';
+import '../../game_provider/game_provider.dart';
 import '../../core/grid_system.dart';
 import '../../core/constants.dart';
 import 'board_painter.dart';
@@ -25,7 +25,7 @@ class BoardWidget extends StatefulWidget {
   final Move? lastMove; // 上一步移动
   final Side? localPlayerSide; // 本地玩家阵营
   final void Function(int x, int y)? onTap; // 点击回调
-  final GamePhase? gamePhase; // 游戏阶段
+  final TurnPhase? gamePhase; // 游戏阶段
   final Skill? selectedSkill; // 选中的技能
   final Side? currentSide; // 当前行动方
 
@@ -46,8 +46,7 @@ class BoardWidget extends StatefulWidget {
   State<BoardWidget> createState() => _BoardWidgetState();
 }
 
-class _BoardWidgetState extends State<BoardWidget>
-    with SingleTickerProviderStateMixin {
+class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStateMixin {
   late GridSystem gridSystem; // 坐标系统
   late AnimationController _animationController; // 动画控制器（用于脉冲效果）
 
@@ -80,8 +79,7 @@ class _BoardWidgetState extends State<BoardWidget>
   /// 初始化坐标系统
   void _initGridSystem() {
     gridSystem = GridSystem(
-      boardOffset: const Offset(
-          BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
+      boardOffset: const Offset(BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
       cellSize: 60.0, // 默认值，实际会在 build 中动态计算
     );
     if (widget.localPlayerSide != null) {
@@ -104,31 +102,22 @@ class _BoardWidgetState extends State<BoardWidget>
 
   /// 计算格子大小（基于可用空间）
   double _calculateCellSize(BoxConstraints constraints) {
-    final cellSizeByWidth =
-        (constraints.maxWidth * BoardWidgetConfig.boardSizeRatio) /
-            BoardConstants.boardWidth;
-    final cellSizeByHeight =
-        (constraints.maxHeight * BoardWidgetConfig.boardSizeRatio) /
-            BoardConstants.boardHeight;
-    return cellSizeByWidth < cellSizeByHeight
-        ? cellSizeByWidth
-        : cellSizeByHeight;
+    final cellSizeByWidth = (constraints.maxWidth * BoardWidgetConfig.boardSizeRatio) / BoardConstants.boardWidth;
+    final cellSizeByHeight = (constraints.maxHeight * BoardWidgetConfig.boardSizeRatio) / BoardConstants.boardHeight;
+    return cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
   }
 
   /// 计算棋盘实际尺寸（格子大小 × 格子数量 + 内边距）
   Size _calculateBoardSize(double cellSize) {
-    final width = BoardConstants.boardWidth * cellSize +
-        BoardWidgetConfig.boardPadding * 2;
-    final height = BoardConstants.boardHeight * cellSize +
-        BoardWidgetConfig.boardPadding * 2;
+    final width = BoardConstants.boardWidth * cellSize + BoardWidgetConfig.boardPadding * 2;
+    final height = BoardConstants.boardHeight * cellSize + BoardWidgetConfig.boardPadding * 2;
     return Size(width, height);
   }
 
   /// 更新坐标系统（boardOffset 只是棋盘内部边距）
   void _updateGridSystem(double cellSize) {
     gridSystem = GridSystem(
-      boardOffset: const Offset(
-          BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
+      boardOffset: const Offset(BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
       cellSize: cellSize,
     );
     if (widget.localPlayerSide != null) {
