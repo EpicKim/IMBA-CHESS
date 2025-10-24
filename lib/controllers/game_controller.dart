@@ -239,29 +239,126 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// 检查并开始技能选择流程（只在当前玩家是MePlayer时）
+  /// 检查并开始技能选择流程（本地玩家和AI玩家都需要）
   void _checkAndStartSkillSelection() {
-    // 只在当前玩家是本地玩家时触发技能选择
-    if (currentPlayer?.isMe != true) {
-      // 如果当前玩家是AI，执行AI回合
-      if (currentPlayer?.isAI == true) {
-        _executeAITurn();
-      }
-      return;
-    }
-
     // 生成3张随机技能卡
     final availableSkills = _generateSkillCards();
 
-    // 进入技能选择阶段
-    _uiState = _uiState.copyWith(
-      phase: GamePhase.selectSkill,
-      availableSkills: availableSkills,
-      clearSelectedSkill: true,
-      message: '请选择一个技能',
-    );
+    // 如果当前玩家是AI，自动执行技能选择
+    if (currentPlayer?.isAI == true) {
+      _executeAISkillSelection(availableSkills);
+      return;
+    }
 
+    // 如果当前玩家是本地玩家，进入技能选择阶段
+    if (currentPlayer?.isMe == true) {
+      _uiState = _uiState.copyWith(
+        phase: GamePhase.selectSkill,
+        availableSkills: availableSkills,
+        clearSelectedSkill: true,
+        message: '请选择一个技能',
+      );
+      notifyListeners();
+    }
+  }
+
+  /// 执行AI的技能选择流程
+  Future<void> _executeAISkillSelection(List<Skill> availableSkills) async {
+    _isAIThinking = true;
     notifyListeners();
+
+    try {
+      // 让AI选择技能
+      final selectedSkill = await currentPlayer!.chooseSkill(
+        availableSkills,
+        _gameState,
+      );
+
+      if (selectedSkill != null) {
+        // AI选择一个己方棋子来赋予技能
+        final targetPiece = _findBestPieceForSkill(selectedSkill);
+
+        if (targetPiece != null) {
+          // 赋予技能
+          final newSkills = [...targetPiece.piece.skillsList, selectedSkill];
+          final newPiece = Piece(
+            id: targetPiece.piece.id,
+            side: targetPiece.piece.side,
+            label: targetPiece.piece.label,
+            skillsList: newSkills,
+          );
+
+          // 更新棋盘
+          final newBoard = _gameState.board.copyWith();
+          newBoard.set(targetPiece.x, targetPiece.y, newPiece);
+
+          _gameState = _gameState.copyWith(board: newBoard);
+
+          // 更新最后技能选择回合数
+          _lastSkillSelectionFullmove = _gameState.fullmoveCount;
+
+          print('[AI] 选择了技能: ${selectedSkill.name}, 赋予给位置(${targetPiece.x}, ${targetPiece.y})的棋子');
+        }
+      }
+    } catch (e) {
+      print('[GameController] AI技能选择出错: $e');
+    } finally {
+      _isAIThinking = false;
+      notifyListeners();
+
+      // 如果下一个玩家也是AI，继续执行AI回合
+      if (currentPlayer?.isAI == true) {
+        _executeAITurn();
+      }
+    }
+  }
+
+  /// 为技能选择最佳棋子
+  /// 优先级：车 > 马 > 炮 > 其他
+  ({Piece piece, int x, int y})? _findBestPieceForSkill(Skill skill) {
+    final board = _gameState.board;
+    final side = _gameState.sideToMove;
+
+    // 收集所有己方棋子
+    final candidates = <({Piece piece, int x, int y, int priority})>[];
+
+    for (var y = 0; y < BoardConstants.boardHeight; y++) {
+      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+        final piece = board.get(x, y);
+
+        if (piece != null && piece.side == side) {
+          // 如果已有该技能，跳过
+          if (piece.hasSkill(skill.typeId)) {
+            continue;
+          }
+
+          // 根据棋子类型分配优先级
+          int priority = 0;
+          if (piece.hasSkill(SkillType.rook)) {
+            priority = 3; // 车最高优先级
+          } else if (piece.hasSkill(SkillType.knight)) {
+            priority = 2; // 马次之
+          } else if (piece.hasSkill(SkillType.cannon)) {
+            priority = 2; // 炮次之
+          } else {
+            priority = 1; // 其他
+          }
+
+          candidates.add((piece: piece, x: x, y: y, priority: priority));
+        }
+      }
+    }
+
+    // 如果没有候选者，返回null
+    if (candidates.isEmpty) {
+      return null;
+    }
+
+    // 按优先级排序，选择优先级最高的
+    candidates.sort((a, b) => b.priority.compareTo(a.priority));
+
+    final best = candidates.first;
+    return (piece: best.piece, x: best.x, y: best.y);
   }
 
   /// 生成3张随机技能卡

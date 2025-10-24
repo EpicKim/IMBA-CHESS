@@ -7,6 +7,7 @@ import '../models/move.dart';
 import '../models/game_state.dart';
 import '../models/skill.dart';
 import '../core/constants.dart';
+import '../skills/skill_types.dart';
 import 'search.dart';
 import 'greedy.dart';
 
@@ -33,7 +34,7 @@ class AIController {
   /// - thinkingTime: 每步思考时间（毫秒）
   AIController({
     this.difficultyLevel = 3,
-    this.thinkingTime = 3000,
+    this.thinkingTime = 1000, // 降低默认思考时间从3秒到1秒
   });
 
   /// 选择最佳走法
@@ -111,28 +112,58 @@ class AIController {
       return null;
     }
 
-    // 简单策略：随机选择一个技能
-    // TODO: 实现更智能的技能选择策略
-    await Future.delayed(const Duration(milliseconds: 500)); // 模拟思考
+    // 智能技能选择策略
+    // 优先级：车 > 马/炮 > 兵/卒 > 其他
+    await Future.delayed(const Duration(milliseconds: 300)); // 减少思考时间
 
-    return availableSkills.first;
+    // 按优先级排序
+    final sortedSkills = List<Skill>.from(availableSkills);
+    sortedSkills.sort((a, b) {
+      final priorityA = _getSkillPriority(a);
+      final priorityB = _getSkillPriority(b);
+      return priorityB.compareTo(priorityA);
+    });
+
+    return sortedSkills.first;
+  }
+
+  /// 获取技能优先级（越高越好）
+  int _getSkillPriority(Skill skill) {
+    switch (skill.typeId) {
+      case SkillType.rook:
+        return 5; // 车最强
+      case SkillType.cannon:
+        return 4; // 炮次之
+      case SkillType.knight:
+        return 4; // 马次之
+      case SkillType.pawn:
+        return 3; // 兵/卒
+      case SkillType.advisor:
+        return 2; // 士
+      case SkillType.bishop:
+        return 2; // 相/象
+      case SkillType.king:
+        return 1; // 将/帅最低（一般不会作为技能）
+      default:
+        return 0;
+    }
   }
 
   /// 根据难度等级获取最大搜索深度
   int _getMaxDepth() {
     switch (difficultyLevel) {
       case 1:
-        return 2; // 简单
+        return 1; // 简单 - 降低搜索深度
       case 2:
-        return 3; // 普通
+        return 2; // 普通 - 降低搜索深度
       case 3:
-        return 4; // 困难
+        return 3; // 困难 - 降低搜索深度
       case 4:
-        return 5; // 专家
+        return 4; // 专家 - 降低搜索深度
       case 5:
-        return 6; // 大师
+        return 5; // 大师 - 降低搜索深度
       default:
-        return 4;
+        return 3;
     }
   }
 

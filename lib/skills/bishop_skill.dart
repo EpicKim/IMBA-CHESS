@@ -1,6 +1,6 @@
 // 相/象技能走法生成器
 // 参考源文件: src/skills/bishop.lua
-// 走法规则: 田字走法，不能过河（注意：本游戏不检查塞象眼）
+// 走法规则: 田字走法（Imba象棋：无过河限制，不检查塞象眼）
 
 import '../models/move.dart';
 import '../models/board.dart';
@@ -8,9 +8,9 @@ import '../core/constants.dart';
 
 /// 相/象技能走法生成函数
 ///
-/// 注意：
+/// Imba象棋规则：
 /// 1. 本游戏中象技能不检查塞象眼
-/// 2. 相/象不能过河
+/// 2. 【无过河限制】- 可以在全棋盘范围内移动
 ///
 /// 参数:
 /// - state: 游戏状态对象
@@ -42,16 +42,7 @@ List<Move> generateBishopMoves(dynamic state, int x, int y, Side side, dynamic p
       continue;
     }
 
-    // 检查是否过河
-    // 红方（side == red）：不能到 y < 5 的区域
-    // 黑方（side == black）：不能到 y >= 5 的区域
-    if (side == Side.red && ty < 5) {
-      continue; // 红相过河
-    }
-    if (side == Side.black && ty >= 5) {
-      continue; // 黑象过河
-    }
-
+    // Imba象棋特性：相/象技能不受过河限制！
     // 获取目标位置的棋子
     final targetPiece = board.get(tx, ty);
 

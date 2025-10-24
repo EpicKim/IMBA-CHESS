@@ -1,6 +1,6 @@
 // 士技能走法生成器
 // 参考源文件: src/skills/advisor.lua
-// 走法规则: 沿对角线走一步，不能离开九宫
+// 走法规则: 沿对角线走一步（Imba象棋：无九宫格限制）
 
 import '../models/move.dart';
 import '../models/board.dart';
@@ -8,9 +8,9 @@ import '../core/constants.dart';
 
 /// 士技能走法生成函数
 ///
-/// 士的走法规则：
+/// 士的走法规则（Imba象棋版本）：
 /// 1. 只能沿对角线移动一步
-/// 2. 不能离开九宫格
+/// 2. 【无九宫格限制】- 可以在全棋盘范围内移动
 ///
 /// 参数:
 /// - state: 游戏状态对象
@@ -42,21 +42,7 @@ List<Move> generateAdvisorMoves(dynamic state, int x, int y, Side side, dynamic 
       continue;
     }
 
-    // 检查是否在九宫内
-    // 红方九宫：x: 3-5, y: 7-9
-    // 黑方九宫：x: 3-5, y: 0-2
-    if (side == Side.red) {
-      // 红方士必须在红方九宫内
-      if (tx < BoardConstants.redPalaceLeft || tx > BoardConstants.redPalaceRight || ty < BoardConstants.redPalaceTop || ty > BoardConstants.redPalaceBottom) {
-        continue;
-      }
-    } else {
-      // 黑方士必须在黑方九宫内
-      if (tx < BoardConstants.blackPalaceLeft || tx > BoardConstants.blackPalaceRight || ty < BoardConstants.blackPalaceTop || ty > BoardConstants.blackPalaceBottom) {
-        continue;
-      }
-    }
-
+    // Imba象棋特性：士技能不受九宫格限制！
     // 获取目标位置的棋子
     final targetPiece = board.get(tx, ty);
 
