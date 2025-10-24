@@ -1,6 +1,6 @@
-// 游戏控制器
+// 游戏Provider
 // 参考源文件: src/stages/StageManager.lua, main.lua
-// 功能：统一管理游戏流程、玩家交互、状态转换
+// 功能：统一管理游戏流程、玩家交互、状态转换、玩家数据
 
 import 'package:flutter/foundation.dart';
 import '../models/game_state.dart';
@@ -13,10 +13,10 @@ import '../core/constants.dart';
 import '../core/move_generator.dart';
 import '../skills/skill_types.dart';
 
-/// 游戏控制器
+/// 游戏Provider
 ///
-/// 管理整个游戏的流程和状态
-class GameController extends ChangeNotifier {
+/// 管理整个游戏的流程、状态和玩家数据
+class GameProvider extends ChangeNotifier {
   /// 游戏状态
   GameState _gameState;
 
@@ -42,7 +42,7 @@ class GameController extends ChangeNotifier {
   };
 
   /// 构造函数
-  GameController()
+  GameProvider()
       : _gameState = GameState.initial(),
         _uiState = const UIState() {
     // 开局时立即触发技能选择（在setPlayers后会自动调用）
@@ -55,22 +55,75 @@ class GameController extends ChangeNotifier {
   /// 获取UI状态
   UIState get uiState => _uiState;
 
+  /// 获取红方玩家
+  Player? get redPlayer => _redPlayer;
+
+  /// 获取黑方玩家
+  Player? get blackPlayer => _blackPlayer;
+
+  /// 根据阵营获取玩家
+  ///
+  /// 参数:
+  /// - side: 阵营
+  ///
+  /// 返回: 对应阵营的玩家
+  Player? getPlayerBySide(Side side) {
+    return side == Side.red ? _redPlayer : _blackPlayer;
+  }
+
   /// 获取当前玩家
   Player? get currentPlayer {
-    return _gameState.sideToMove == Side.red ? _redPlayer : _blackPlayer;
+    return getPlayerBySide(_gameState.sideToMove);
   }
 
   /// 是否正在AI思考
   bool get isAIThinking => _isAIThinking;
 
+  /// 获取本地玩家的阵营（用于棋盘翻转）
+  /// 如果没有本地玩家，默认返回红方视角
+  Side get localPlayerSide {
+    // 检查红方玩家是否是本地玩家
+    if (_redPlayer?.isMe == true) {
+      return Side.red;
+    }
+    // 检查黑方玩家是否是本地玩家
+    if (_blackPlayer?.isMe == true) {
+      return Side.black;
+    }
+    // 默认红方视角
+    return Side.red;
+  }
+
+  /// 获取本地玩家
+  Player? get localPlayer {
+    if (_redPlayer?.isMe == true) {
+      return _redPlayer;
+    }
+    if (_blackPlayer?.isMe == true) {
+      return _blackPlayer;
+    }
+    return null;
+  }
+
   /// 设置玩家
+  ///
+  /// 参数:
+  /// - redPlayer: 红方玩家
+  /// - blackPlayer: 黑方玩家
   void setPlayers(Player redPlayer, Player blackPlayer) {
     _redPlayer = redPlayer;
     _blackPlayer = blackPlayer;
     notifyListeners();
 
-    // 开局时，如果当前玩家是MePlayer，触发技能选择
+    // 开局时，触发技能选择
     _checkAndStartSkillSelection();
+  }
+
+  /// 清空玩家数据
+  void clearPlayers() {
+    _redPlayer = null;
+    _blackPlayer = null;
+    notifyListeners();
   }
 
   /// 开始新游戏
@@ -136,7 +189,8 @@ class GameController extends ChangeNotifier {
         selectedPos.y,
       );
 
-      final targetMove = legalMoves.where((m) => m.to.x == x && m.to.y == y).firstOrNull;
+      final targetMove =
+          legalMoves.where((m) => m.to.x == x && m.to.y == y).firstOrNull;
 
       if (targetMove != null) {
         // 执行移动
@@ -326,7 +380,8 @@ class GameController extends ChangeNotifier {
           // 更新最后技能选择回合数
           _lastSkillSelectionFullmove = _gameState.fullmoveCount;
 
-          print('[AI] 选择了技能: ${selectedSkill.name}, 赋予给位置(${targetPiece.x}, ${targetPiece.y})的棋子');
+          print(
+              '[AI] 选择了技能: ${selectedSkill.name}, 赋予给位置(${targetPiece.x}, ${targetPiece.y})的棋子');
         }
       }
     } catch (e) {
@@ -420,7 +475,8 @@ class GameController extends ChangeNotifier {
 
     // 随机选择3个不重复的技能
     while (skills.length < 3 && selected.length < allSkillTypes.length) {
-      final randomIndex = DateTime.now().millisecondsSinceEpoch % allSkillTypes.length;
+      final randomIndex =
+          DateTime.now().millisecondsSinceEpoch % allSkillTypes.length;
       final skillType = allSkillTypes[randomIndex];
 
       if (!selected.contains(skillType)) {

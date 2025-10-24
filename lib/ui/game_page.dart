@@ -29,42 +29,43 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  late GameController _gameController;
+  late GameProvider _gameProvider;
 
   @override
   void initState() {
     super.initState();
 
-    // 初始化游戏控制器
-    _gameController = GameController();
+    // 初始化游戏Provider
+    _gameProvider = GameProvider();
 
-    // 设置玩家（默认：玩家 vs AI）
-    _gameController.setPlayers(
-      MePlayer(
-        id: 'me',
-        name: '玩家',
-        side: Side.red,
-      ),
+    // 设置玩家（默认：AI vs 玩家）
+    _gameProvider.setPlayers(
       AIPlayer(
         id: 'ai',
         name: 'AI',
-        side: Side.black,
+        side: Side.red,
         difficultyLevel: 3,
         thinkingTime: 3000,
+      ),
+      MePlayer(
+        id: 'me',
+        name: '玩家',
+        side: Side.black,
       ),
     );
   }
 
   @override
   void dispose() {
-    _gameController.dispose();
+    _gameProvider.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // 使用ChangeNotifierProvider提供GameProvider
     return ChangeNotifierProvider.value(
-      value: _gameController,
+      value: _gameProvider,
       child: Scaffold(
         body: Container(
           color: const Color(0xFFF5F5DC),
@@ -99,7 +100,7 @@ class _GamePageState extends State<GamePage> {
             child: Column(
               children: [
                 // 信息面板
-                Consumer<GameController>(
+                Consumer<GameProvider>(
                   builder: (context, controller, _) {
                     final selectedPiece =
                         controller.uiState.selectedPiece != null
@@ -120,7 +121,7 @@ class _GamePageState extends State<GamePage> {
                 SizedBox(height: 16.h),
 
                 // AI思考指示器
-                Consumer<GameController>(
+                Consumer<GameProvider>(
                   builder: (context, controller, _) {
                     if (controller.isAIThinking) {
                       return Card(
@@ -149,14 +150,15 @@ class _GamePageState extends State<GamePage> {
         Expanded(
           flex: 5,
           child: Center(
-            child: Consumer<GameController>(
+            child: Consumer<GameProvider>(
               builder: (context, controller, _) {
                 return BoardWidget(
                   board: controller.gameState.board,
                   selectedPiece: controller.uiState.selectedPiece,
                   legalMoves: controller.getSelectedPieceLegalMoves(),
                   lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide: Side.red, // 默认红方视角
+                  localPlayerSide:
+                      controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
                   onTap: (x, y) => controller.handleBoardTap(x, y),
                   gamePhase: controller.uiState.phase,
                   selectedSkill: controller.uiState.selectedSkill,
@@ -176,7 +178,7 @@ class _GamePageState extends State<GamePage> {
               Expanded(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 16.w),
-                  child: Consumer<GameController>(
+                  child: Consumer<GameProvider>(
                     builder: (context, controller, _) {
                       return SkillPanel(
                         availableSkills: controller.uiState.availableSkills,
@@ -210,14 +212,15 @@ class _GamePageState extends State<GamePage> {
         Expanded(
           flex: 3,
           child: Center(
-            child: Consumer<GameController>(
+            child: Consumer<GameProvider>(
               builder: (context, controller, _) {
                 return BoardWidget(
                   board: controller.gameState.board,
                   selectedPiece: controller.uiState.selectedPiece,
                   legalMoves: controller.getSelectedPieceLegalMoves(),
                   lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide: Side.red,
+                  localPlayerSide:
+                      controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
                   onTap: (x, y) => controller.handleBoardTap(x, y),
                   gamePhase: controller.uiState.phase,
                   selectedSkill: controller.uiState.selectedSkill,
@@ -231,7 +234,7 @@ class _GamePageState extends State<GamePage> {
         // 信息区域
         Expanded(
           flex: 2,
-          child: Consumer<GameController>(
+          child: Consumer<GameProvider>(
             builder: (context, controller, _) {
               final selectedPiece = controller.uiState.selectedPiece != null
                   ? controller.gameState.board.get(
@@ -324,7 +327,7 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ),
-      child: Consumer<GameController>(
+      child: Consumer<GameProvider>(
         builder: (context, controller, _) {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -421,7 +424,7 @@ class _GamePageState extends State<GamePage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              _gameController.startNewGame();
+              _gameProvider.startNewGame();
             },
             child: const Text('确定'),
           ),

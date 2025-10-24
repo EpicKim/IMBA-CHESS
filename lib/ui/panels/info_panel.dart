@@ -3,11 +3,13 @@
 // 功能：显示游戏信息（当前回合、选中棋子、合法移动数等）
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/game_state.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
 import '../../core/constants.dart';
+import '../../controllers/game_controller.dart';
 
 /// 信息面板组件
 ///
@@ -32,6 +34,10 @@ class InfoPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 从GameProvider获取玩家信息
+    final game = context.watch<GameProvider>();
+    final currentPlayer = game.getPlayerBySide(gameState.sideToMove);
+
     return Card(
       margin: EdgeInsets.all(16.w),
       child: Padding(
@@ -58,8 +64,10 @@ class InfoPanel extends StatelessWidget {
             ),
             _buildInfoRow(
               '行动方',
-              gameState.sideToMove == Side.red ? '红方' : '黑方',
-              color: gameState.sideToMove == Side.red ? Colors.red : Colors.blueGrey,
+              '${gameState.sideToMove == Side.red ? '红方' : '黑方'}${currentPlayer != null ? ' (${currentPlayer.name})' : ''}',
+              color: gameState.sideToMove == Side.red
+                  ? Colors.red
+                  : Colors.blueGrey,
             ),
 
             SizedBox(height: 8.h),
@@ -71,7 +79,9 @@ class InfoPanel extends StatelessWidget {
               _buildInfoRow(
                 '选中棋子',
                 selectedPiece!.label ?? '?',
-                color: selectedPiece!.side == Side.red ? Colors.red : Colors.blueGrey,
+                color: selectedPiece!.side == Side.red
+                    ? Colors.red
+                    : Colors.blueGrey,
               ),
               _buildInfoRow(
                 '技能数量',
