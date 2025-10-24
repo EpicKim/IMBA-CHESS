@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'pages/game_page.dart';
+import 'ui/game_page.dart';
 
 void main() {
   runApp(const ImbaChessApp());

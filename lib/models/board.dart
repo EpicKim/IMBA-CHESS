@@ -2,7 +2,7 @@
 // 参考源文件: src/game/Board.lua
 
 import '../core/constants.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 import 'piece.dart';
 import 'move.dart';
 

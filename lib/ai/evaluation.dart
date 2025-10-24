@@ -5,7 +5,7 @@
 import '../models/game_state.dart';
 import '../models/piece.dart';
 import '../core/constants.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 import '../core/move_generator.dart';
 
 /// 局面评估器

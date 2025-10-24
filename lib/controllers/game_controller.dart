@@ -5,13 +5,13 @@
 import 'package:flutter/foundation.dart';
 import '../models/game_state.dart';
 import '../models/game_phase.dart';
-import '../models/player.dart';
+import '../players/player.dart';
 import '../models/move.dart';
 import '../models/skill.dart';
 import '../models/piece.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 
 /// 游戏控制器
 ///

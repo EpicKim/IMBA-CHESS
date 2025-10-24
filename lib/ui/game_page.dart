@@ -5,11 +5,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/game_controller.dart';
-import '../widgets/board/board_widget.dart';
-import '../widgets/panels/info_panel.dart';
-import '../widgets/panels/skill_panel.dart';
-import '../models/me_player.dart';
-import '../models/ai_player.dart';
+import 'board/board_widget.dart';
+import 'panels/info_panel.dart';
+import 'panels/skill_panel.dart';
+import '../players/me_player.dart';
+import '../players/ai_player.dart';
 import '../models/game_phase.dart';
 import '../core/constants.dart';
 

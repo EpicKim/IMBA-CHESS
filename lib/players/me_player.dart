@@ -4,9 +4,9 @@
 
 import 'dart:async';
 import 'player.dart';
-import 'move.dart';
-import 'game_state.dart';
-import 'skill.dart';
+import '../models/move.dart';
+import '../models/game_state.dart';
+import '../models/skill.dart';
 import '../core/constants.dart';
 
 /// 本地玩家类

@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/king.lua
 // 走法规则: 只能在四个正方向走一步（上下左右）
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 将/帅技能走法生成函数
 ///

@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import '../../models/skill.dart';
-import '../../core/skills/skill_types.dart';
+import '../../skills/skill_types.dart';
 
 /// 技能面板组件
 ///

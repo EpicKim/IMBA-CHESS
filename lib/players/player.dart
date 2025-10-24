@@ -2,9 +2,9 @@
 // 参考源文件: src/players/Player.lua
 // 功能：定义玩家接口
 
-import 'move.dart';
-import 'game_state.dart';
-import 'skill.dart';
+import '../models/move.dart';
+import '../models/game_state.dart';
+import '../models/skill.dart';
 import '../core/constants.dart';
 
 /// 玩家抽象类

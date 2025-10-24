@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/pawn.lua
 // 走法规则: 前进一步；过河后可左右移动
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 兵/卒技能走法生成函数
 ///

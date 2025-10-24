@@ -2,7 +2,7 @@
 // 参考源文件: src/skills/BaseSkill.lua
 
 import 'package:equatable/equatable.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 import 'move.dart';
 
 /// 走法生成器函数类型

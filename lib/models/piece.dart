@@ -3,7 +3,7 @@
 
 import 'package:equatable/equatable.dart';
 import '../core/constants.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 import 'skill.dart';
 
 /// 棋子类

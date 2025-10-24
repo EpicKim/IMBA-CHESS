@@ -4,7 +4,7 @@
 
 import '../models/move.dart';
 import '../models/game_state.dart';
-import '../core/skills/skill_types.dart';
+import '../skills/skill_types.dart';
 import '../core/constants.dart';
 
 /// 走法排序器

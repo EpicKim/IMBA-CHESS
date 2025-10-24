@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/bishop.lua
 // 走法规则: 田字走法，不能过河（注意：本游戏不检查塞象眼）
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 相/象技能走法生成函数
 ///

@@ -5,7 +5,7 @@
 import '../models/move.dart';
 import '../models/board.dart';
 import 'constants.dart';
-import 'skills/skill_types.dart';
+import '../skills/skill_types.dart';
 
 /// 走法生成器类
 ///

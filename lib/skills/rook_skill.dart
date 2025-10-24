@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/rook.lua
 // 走法规则: 沿直线走任意步（横向或纵向）
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 车技能走法生成函数
 ///

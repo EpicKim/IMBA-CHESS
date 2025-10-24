@@ -1,15 +1,15 @@
 // 技能类型枚举定义
 // 参考源文件: src/skills/init.lua
 
-import '../../models/skill.dart';
-import '../constants.dart';
-import 'generators/king_skill.dart';
-import 'generators/rook_skill.dart';
-import 'generators/cannon_skill.dart';
-import 'generators/knight_skill.dart';
-import 'generators/bishop_skill.dart';
-import 'generators/advisor_skill.dart';
-import 'generators/pawn_skill.dart';
+import '../models/skill.dart';
+import '../core/constants.dart';
+import 'king_skill.dart';
+import 'rook_skill.dart';
+import 'cannon_skill.dart';
+import 'knight_skill.dart';
+import 'bishop_skill.dart';
+import 'advisor_skill.dart';
+import 'pawn_skill.dart';
 
 /// 技能类型枚举
 /// 定义所有可用的象棋技能类型

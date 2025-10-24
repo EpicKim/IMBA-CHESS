@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/knight.lua
 // 走法规则: 日字走法（注意：本游戏不检查蹩马腿）
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 马技能走法生成函数
 ///

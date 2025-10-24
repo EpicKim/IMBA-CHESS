@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/cannon.lua
 // 走法规则: 直线移动或隔一子吃子
 
-import '../../../models/move.dart';
-import '../../../models/board.dart';
-import '../../constants.dart';
+import '../models/move.dart';
+import '../models/board.dart';
+import '../core/constants.dart';
 
 /// 炮技能走法生成函数
 ///
