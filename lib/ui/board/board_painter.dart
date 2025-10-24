@@ -89,11 +89,11 @@ class BoardPainter extends CustomPainter {
       _drawSelectedHighlight(canvas, selectedPiece!);
     }
 
-    // 6. 绘制合法移动提示
-    _drawLegalMoveHints(canvas, legalMoves);
-
-    // 7. 绘制棋子
+    // 6. 绘制棋子
     _drawPieces(canvas);
+
+    // 7. 绘制合法移动提示（在棋子之后绘制，这样红圈不会被棋子覆盖）
+    _drawLegalMoveHints(canvas, legalMoves);
   }
 
   /// 绘制棋盘背景（只在棋盘区域内，确保边距一致）
@@ -263,20 +263,27 @@ class BoardPainter extends CustomPainter {
 
   /// 绘制合法移动提示
   void _drawLegalMoveHints(Canvas canvas, List<Move> moves) {
-    final paint = Paint()..color = BoardUIConfig.legalMoveHintColor.withOpacity(0.5);
+    // 只在下棋阶段显示移动提示
+    if (gamePhase != TurnPhase.playing) {
+      return;
+    }
 
     for (final move in moves) {
       final center = gridSystem.gridToScreen(move.to.x, move.to.y);
 
       if (move.isCapture) {
-        // 吃子：绘制空心圆
-        paint.style = PaintingStyle.stroke;
-        paint.strokeWidth = gridSystem.cellSize * BoardUIConfig.captureDotWidth;
-        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.captureDotRadius, paint);
+        // 吃子：绘制红色空心圆
+        final capturePaint = Paint()
+          ..color = Colors.red.withOpacity(0.8)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = gridSystem.cellSize * BoardUIConfig.captureDotWidth;
+        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.captureDotRadius, capturePaint);
       } else {
-        // 移动：绘制实心圆
-        paint.style = PaintingStyle.fill;
-        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.moveDotRadius, paint);
+        // 移动：绘制蓝色实心圆
+        final movePaint = Paint()
+          ..color = BoardUIConfig.legalMoveHintColor.withOpacity(0.5)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(center, gridSystem.cellSize * BoardUIConfig.moveDotRadius, movePaint);
       }
     }
   }

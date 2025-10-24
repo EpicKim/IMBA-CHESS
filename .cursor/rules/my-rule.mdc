@@ -6,3 +6,4 @@ alwaysApply: true
 
 - 每行代码都写注释
 - 涉及到UI的要用`flutter_screenutil`
+- 不要尝试用`flutter run`帮我测试程序，我会自己操作
