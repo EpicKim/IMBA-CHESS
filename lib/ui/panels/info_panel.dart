@@ -95,7 +95,7 @@ class InfoPanel extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(left: 16, top: 2),
                   child: Text(
-                    '• ${skill.name}',
+                    '• ${skill.getDisplayName(selectedPiece!.side)}',
                     style: const TextStyle(fontSize: 12),
                   ),
                 );

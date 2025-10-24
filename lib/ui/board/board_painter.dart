@@ -387,9 +387,9 @@ class BoardPainter extends CustomPainter {
         ..style = PaintingStyle.stroke;
       canvas.drawCircle(Offset(badgeX, badgeY), 10, badgeBorderPaint);
 
-      // 绘制徽章文字（技能名称）
+      // 绘制徽章文字（技能名称，根据棋子阵营显示）
       final badgeTextSpan = TextSpan(
-        text: skill.name,
+        text: skill.getDisplayName(piece.side),
         style: const TextStyle(
           color: Color.fromRGBO(51, 25, 0, 1.0),
           fontSize: 10.0,

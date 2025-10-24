@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import '../../models/skill.dart';
 import '../../skills/skill_types.dart';
+import '../../core/constants.dart';
 
 /// 技能面板组件
 ///
@@ -25,6 +26,9 @@ class SkillPanel extends StatelessWidget {
   /// 提示信息
   final String message;
 
+  /// 当前选择技能的玩家阵营
+  final Side currentSide;
+
   /// 构造函数
   const SkillPanel({
     super.key,
@@ -33,6 +37,7 @@ class SkillPanel extends StatelessWidget {
     this.onSkillSelected,
     this.isSelecting = false,
     this.message = '',
+    required this.currentSide,
   });
 
   @override
@@ -122,6 +127,7 @@ class SkillPanel extends StatelessWidget {
                     return _SkillCard(
                       skill: skill,
                       isSelected: isSelected,
+                      currentSide: currentSide,
                       onTap: isSelecting && onSkillSelected != null ? () => onSkillSelected!(skill) : null,
                     );
                   },
@@ -146,11 +152,15 @@ class _SkillCard extends StatelessWidget {
   /// 点击回调
   final VoidCallback? onTap;
 
+  /// 当前玩家阵营
+  final Side currentSide;
+
   /// 构造函数
   const _SkillCard({
     required this.skill,
     this.isSelected = false,
     this.onTap,
+    required this.currentSide,
   });
 
   @override
@@ -196,7 +206,7 @@ class _SkillCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      skill.name,
+                      skill.getDisplayName(currentSide),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -258,29 +268,15 @@ class _SkillCard extends StatelessWidget {
 
   /// 获取技能图标（文字）
   String _getSkillIcon(SkillType type) {
-    switch (type) {
-      case SkillType.king:
-        return '将';
-      case SkillType.rook:
-        return '車';
-      case SkillType.cannon:
-        return '炮';
-      case SkillType.knight:
-        return '馬';
-      case SkillType.bishop:
-        return '象';
-      case SkillType.advisor:
-        return '士';
-      case SkillType.pawn:
-        return '兵';
-    }
+    // 使用当前玩家阵营显示图标
+    return type.getDisplayName(currentSide);
   }
 
   /// 获取技能描述
   String _getSkillDescription(SkillType type) {
     switch (type) {
       case SkillType.king:
-        return '在九宫内直线移动一格';
+        return 'Imba象棋：全棋盘直线移动一格';
       case SkillType.rook:
         return '直线移动任意格';
       case SkillType.cannon:
@@ -288,9 +284,9 @@ class _SkillCard extends StatelessWidget {
       case SkillType.knight:
         return '日字走法';
       case SkillType.bishop:
-        return '田字走法，不可过河';
+        return 'Imba象棋：全棋盘田字走法';
       case SkillType.advisor:
-        return '九宫内斜线移动一格';
+        return 'Imba象棋：全棋盘斜线移动一格';
       case SkillType.pawn:
         return '前进一格，过河后可横移';
     }

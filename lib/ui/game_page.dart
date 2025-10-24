@@ -205,6 +205,7 @@ class _GamePageState extends State<GamePage> {
                   selectedSkill: controller.uiState.selectedSkill,
                   isSelecting: controller.uiState.phase == GamePhase.selectSkill,
                   message: controller.uiState.message ?? '',
+                  currentSide: controller.gameState.sideToMove,
                   onSkillSelected: (skill) => controller.selectSkillCard(skill),
                 );
               },

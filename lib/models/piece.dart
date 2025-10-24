@@ -84,8 +84,8 @@ class Piece extends Equatable {
       newSkillsList.add(skill);
     }
 
-    // 更新标签（如果当前无标签，使用新技能名称）
-    final newLabel = label ?? skill.name;
+    // 更新标签（如果当前无标签，使用新技能名称，根据阵营显示）
+    final newLabel = label ?? skill.getDisplayName(side);
 
     return copyWith(
       skillsList: newSkillsList,

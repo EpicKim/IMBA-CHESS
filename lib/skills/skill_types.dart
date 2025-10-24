@@ -45,6 +45,27 @@ extension SkillTypeExtension on SkillType {
     }
   }
 
+  /// 根据阵营获取技能显示名称
+  /// 红方和黑方的一些棋子名称不同
+  String getDisplayName(Side side) {
+    switch (this) {
+      case SkillType.king:
+        return side == Side.red ? '帅' : '将';
+      case SkillType.rook:
+        return '车';
+      case SkillType.knight:
+        return '马';
+      case SkillType.cannon:
+        return '炮';
+      case SkillType.bishop:
+        return side == Side.red ? '相' : '象';
+      case SkillType.advisor:
+        return '士';
+      case SkillType.pawn:
+        return side == Side.red ? '兵' : '卒';
+    }
+  }
+
   /// 从类型ID获取技能类型
   static SkillType fromTypeId(int id) {
     switch (id) {

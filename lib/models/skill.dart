@@ -3,6 +3,7 @@
 
 import 'package:equatable/equatable.dart';
 import '../skills/skill_types.dart';
+import '../core/constants.dart';
 import 'move.dart';
 
 /// 走法生成器函数类型
@@ -36,6 +37,16 @@ class Skill extends Equatable {
 
   @override
   String toString() => 'Skill{$name}';
+
+  /// 根据阵营获取技能显示名称
+  ///
+  /// 某些棋子在红方和黑方有不同的名称：
+  /// - 帅(红) / 将(黑)
+  /// - 相(红) / 象(黑)
+  /// - 兵(红) / 卒(黑)
+  String getDisplayName(Side side) {
+    return typeId.getDisplayName(side);
+  }
 
   /// 获取该技能在指定位置的所有走法
   ///
