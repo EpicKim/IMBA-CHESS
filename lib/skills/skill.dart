@@ -2,9 +2,9 @@
 // 参考源文件: src/skills/BaseSkill.lua
 
 import 'package:equatable/equatable.dart';
-import '../skills/skill_types.dart';
+import 'skill_types.dart';
 import '../core/constants.dart';
-import 'move.dart';
+import '../models/move.dart';
 
 /// 走法生成器函数类型
 /// 输入：游戏状态、棋子位置(x, y)、棋子所属阵营、棋子对象

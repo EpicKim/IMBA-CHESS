@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../models/board.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
-import '../../models/skill.dart';
+import '../../skills/skill.dart';
 import '../../game_provider/game_provider.dart';
 import '../../core/constants.dart';
 import '../../core/grid_system.dart';

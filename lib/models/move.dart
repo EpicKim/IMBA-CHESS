@@ -2,7 +2,7 @@
 // 参考源文件: src/game/MoveGen.lua
 
 import 'package:equatable/equatable.dart';
-import 'skill.dart';
+import '../skills/skill.dart';
 
 /// 棋盘位置（坐标）
 class Position extends Equatable {

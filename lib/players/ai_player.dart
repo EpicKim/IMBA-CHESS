@@ -4,8 +4,8 @@
 
 import 'player.dart';
 import '../models/move.dart';
-import '../models/game_state.dart';
-import '../models/skill.dart';
+import '../game_provider/game_state.dart';
+import '../skills/skill.dart';
 import '../ai/ai_controller.dart';
 
 /// AI玩家类

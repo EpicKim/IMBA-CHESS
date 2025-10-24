@@ -3,8 +3,8 @@
 // 功能：定义玩家接口
 
 import '../models/move.dart';
-import '../models/game_state.dart';
-import '../models/skill.dart';
+import '../game_provider/game_state.dart';
+import '../skills/skill.dart';
 import '../core/constants.dart';
 
 /// 玩家抽象类

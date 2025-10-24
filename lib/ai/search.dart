@@ -4,7 +4,7 @@
 
 import 'dart:math' as math;
 import '../models/move.dart';
-import '../models/game_state.dart';
+import '../game_provider/game_state.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
 import 'evaluation.dart';

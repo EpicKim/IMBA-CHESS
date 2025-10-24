@@ -4,8 +4,8 @@
 
 import 'dart:async';
 import '../models/move.dart';
-import '../models/game_state.dart';
-import '../models/skill.dart';
+import '../game_provider/game_state.dart';
+import '../skills/skill.dart';
 import '../core/constants.dart';
 import '../skills/skill_types.dart';
 import 'search.dart';

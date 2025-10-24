@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../models/game_state.dart';
+import '../../game_provider/game_state.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
 import '../../core/constants.dart';

@@ -3,8 +3,8 @@
 // 功能：管理整个游戏状态，包括棋盘、当前回合、历史记录等
 
 import 'package:equatable/equatable.dart';
-import 'board.dart';
-import 'move.dart';
+import '../models/board.dart';
+import '../models/move.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
 import '../skills/skill_types.dart';
@@ -81,8 +81,7 @@ class GameState extends Equatable {
     final newHalfmoveClock = move.isCapture ? 0 : halfmoveClock + 1;
 
     // 更新完整回合数（黑方走完后回合数+1）
-    final newFullmoveCount =
-        sideToMove == Side.black ? fullmoveCount + 1 : fullmoveCount;
+    final newFullmoveCount = sideToMove == Side.black ? fullmoveCount + 1 : fullmoveCount;
 
     // 切换行动方
     final newSideToMove = sideToMove == Side.red ? Side.black : Side.red;
@@ -136,8 +135,7 @@ class GameState extends Equatable {
     final newSideToMove = sideToMove == Side.red ? Side.black : Side.red;
 
     // 更新完整回合数
-    final newFullmoveCount =
-        newSideToMove == Side.black ? fullmoveCount - 1 : fullmoveCount;
+    final newFullmoveCount = newSideToMove == Side.black ? fullmoveCount - 1 : fullmoveCount;
 
     // 移除最后一条历史记录
     final newHistory = List<Move>.from(history)..removeLast();
@@ -225,9 +223,7 @@ class GameState extends Equatable {
     for (var y = 0; y < BoardConstants.boardHeight; y++) {
       for (var x = 0; x < BoardConstants.boardWidth; x++) {
         final piece = board.get(x, y);
-        if (piece != null &&
-            piece.side == side &&
-            piece.hasSkill(SkillType.king)) {
+        if (piece != null && piece.side == side && piece.hasSkill(SkillType.king)) {
           // 找到一个拥有king技能的棋子，该方未输
           return false;
         }

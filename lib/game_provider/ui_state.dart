@@ -2,7 +2,7 @@
 // 功能：定义游戏回合阶段和UI状态
 
 import '../models/move.dart';
-import '../models/skill.dart';
+import '../skills/skill.dart';
 
 /// 回合阶段枚举
 /// 用于管理一个完整回合的流程

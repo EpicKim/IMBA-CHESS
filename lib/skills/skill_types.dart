@@ -1,7 +1,7 @@
 // 技能类型枚举定义
 // 参考源文件: src/skills/init.lua
 
-import '../models/skill.dart';
+import 'skill.dart';
 import '../core/constants.dart';
 import 'king_skill.dart';
 import 'rook_skill.dart';

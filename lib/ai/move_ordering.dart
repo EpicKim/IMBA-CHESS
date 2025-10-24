@@ -3,7 +3,7 @@
 // 功能：对走法进行排序，优先搜索有希望的走法
 
 import '../models/move.dart';
-import '../models/game_state.dart';
+import '../game_provider/game_state.dart';
 import '../skills/skill_types.dart';
 import '../core/constants.dart';
 
@@ -59,8 +59,7 @@ class MoveOrdering {
 
       // 3. 将军走法
       final newState = gameState.applyMove(move);
-      final opponentSide =
-          gameState.sideToMove == Side.red ? Side.black : Side.red;
+      final opponentSide = gameState.sideToMove == Side.red ? Side.black : Side.red;
       if (newState.isInCheck()) {
         score += 5000;
       }
@@ -111,9 +110,6 @@ class MoveOrdering {
 
   /// 判断两个走法是否相同
   static bool _isSameMove(Move m1, Move m2) {
-    return m1.from.x == m2.from.x &&
-        m1.from.y == m2.from.y &&
-        m1.to.x == m2.to.x &&
-        m1.to.y == m2.to.y;
+    return m1.from.x == m2.from.x && m1.from.y == m2.from.y && m1.to.x == m2.to.x && m1.to.y == m2.to.y;
   }
 }

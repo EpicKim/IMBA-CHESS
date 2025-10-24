@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../models/skill.dart';
+import '../../skills/skill.dart';
 import '../../skills/skill_types.dart';
 import '../../core/constants.dart';
 

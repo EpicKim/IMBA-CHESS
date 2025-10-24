@@ -3,7 +3,7 @@
 import 'package:equatable/equatable.dart';
 import '../core/constants.dart';
 import '../skills/skill_types.dart';
-import 'skill.dart';
+import '../skills/skill.dart';
 
 /// 棋子类
 /// 核心概念：棋子是"白板"，通过技能系统获得走法能力
@@ -28,8 +28,7 @@ class Piece extends Equatable {
   /// - side: 所属阵营
   /// - label: 显示文字
   /// - skillTypes: 技能类型列表
-  factory Piece.withSkills(
-      int id, Side side, String label, List<SkillType> skillTypes) {
+  factory Piece.withSkills(int id, Side side, String label, List<SkillType> skillTypes) {
     // 将技能类型转换为技能实例
     final skills = skillTypes.map((type) => skillDefinitions[type]!).toList();
 

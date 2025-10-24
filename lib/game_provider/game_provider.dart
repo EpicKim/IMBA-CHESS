@@ -3,10 +3,10 @@
 // 功能：统一管理游戏流程、玩家交互、状态转换、玩家数据
 
 import 'package:flutter/foundation.dart';
-import '../models/game_state.dart';
+import 'game_state.dart';
 import '../players/player.dart';
 import '../models/move.dart';
-import '../models/skill.dart';
+import '../skills/skill.dart';
 import '../models/piece.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';

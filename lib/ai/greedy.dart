@@ -3,7 +3,7 @@
 // 功能：1步前瞻的贪心搜索，作为AI后备方案
 
 import '../models/move.dart';
-import '../models/game_state.dart';
+import '../game_provider/game_state.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
 import 'evaluation.dart';
