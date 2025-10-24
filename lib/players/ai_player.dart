@@ -6,7 +6,6 @@ import 'player.dart';
 import '../models/move.dart';
 import '../models/game_state.dart';
 import '../models/skill.dart';
-import '../core/constants.dart';
 import '../ai/ai_controller.dart';
 
 /// AI玩家类

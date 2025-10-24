@@ -79,7 +79,7 @@ class GreedyAI {
     }
 
     // 3. 中心位置加分（简单启发）
-    final centerX = 4; // 棋盘中心x坐标
+    const centerX = 4; // 棋盘中心x坐标
     final distanceToCenter = (move.to.x - centerX).abs();
     score += (8 - distanceToCenter) * 10;
 

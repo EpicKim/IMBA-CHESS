@@ -71,7 +71,9 @@ class Board {
         final piece = grid[y][x];
 
         // 检查是否是目标阵营的棋子，且拥有将/帅技能
-        if (piece != null && piece.side == side && piece.hasSkill(SkillType.king)) {
+        if (piece != null &&
+            piece.side == side &&
+            piece.hasSkill(SkillType.king)) {
           return Position(x, y);
         }
       }
@@ -159,67 +161,67 @@ class Board {
   /// 设置红方初始棋子
   void _setupRedPieces() {
     // 红方车（0,9）和（8,9）
-    set(0, 9, Piece.withSkills(1, Side.red, '车', [SkillType.rook]));
-    set(8, 9, Piece.withSkills(2, Side.red, '车', [SkillType.rook]));
+    set(0, 9, Piece.withSkills(1, Side.red, '车', const [SkillType.rook]));
+    set(8, 9, Piece.withSkills(2, Side.red, '车', const [SkillType.rook]));
 
     // 红方马（1,9）和（7,9）
-    set(1, 9, Piece.withSkills(3, Side.red, '馬', [SkillType.knight]));
-    set(7, 9, Piece.withSkills(4, Side.red, '馬', [SkillType.knight]));
+    set(1, 9, Piece.withSkills(3, Side.red, '馬', const [SkillType.knight]));
+    set(7, 9, Piece.withSkills(4, Side.red, '馬', const [SkillType.knight]));
 
     // 红方相（2,9）和（6,9）
-    set(2, 9, Piece.withSkills(5, Side.red, '相', [SkillType.bishop]));
-    set(6, 9, Piece.withSkills(6, Side.red, '相', [SkillType.bishop]));
+    set(2, 9, Piece.withSkills(5, Side.red, '相', const [SkillType.bishop]));
+    set(6, 9, Piece.withSkills(6, Side.red, '相', const [SkillType.bishop]));
 
     // 红方士（3,9）和（5,9）
-    set(3, 9, Piece.withSkills(7, Side.red, '士', [SkillType.advisor]));
-    set(5, 9, Piece.withSkills(8, Side.red, '士', [SkillType.advisor]));
+    set(3, 9, Piece.withSkills(7, Side.red, '士', const [SkillType.advisor]));
+    set(5, 9, Piece.withSkills(8, Side.red, '士', const [SkillType.advisor]));
 
     // 红方帅（4,9）
-    set(4, 9, Piece.withSkills(9, Side.red, '帥', [SkillType.king]));
+    set(4, 9, Piece.withSkills(9, Side.red, '帥', const [SkillType.king]));
 
     // 红方炮（1,7）和（7,7）
-    set(1, 7, Piece.withSkills(10, Side.red, '炮', [SkillType.cannon]));
-    set(7, 7, Piece.withSkills(11, Side.red, '炮', [SkillType.cannon]));
+    set(1, 7, Piece.withSkills(10, Side.red, '炮', const [SkillType.cannon]));
+    set(7, 7, Piece.withSkills(11, Side.red, '炮', const [SkillType.cannon]));
 
     // 红方兵（0,6）、（2,6）、（4,6）、（6,6）、（8,6）
-    set(0, 6, Piece.withSkills(12, Side.red, '兵', [SkillType.pawn]));
-    set(2, 6, Piece.withSkills(13, Side.red, '兵', [SkillType.pawn]));
-    set(4, 6, Piece.withSkills(14, Side.red, '兵', [SkillType.pawn]));
-    set(6, 6, Piece.withSkills(15, Side.red, '兵', [SkillType.pawn]));
-    set(8, 6, Piece.withSkills(16, Side.red, '兵', [SkillType.pawn]));
+    set(0, 6, Piece.withSkills(12, Side.red, '兵', const [SkillType.pawn]));
+    set(2, 6, Piece.withSkills(13, Side.red, '兵', const [SkillType.pawn]));
+    set(4, 6, Piece.withSkills(14, Side.red, '兵', const [SkillType.pawn]));
+    set(6, 6, Piece.withSkills(15, Side.red, '兵', const [SkillType.pawn]));
+    set(8, 6, Piece.withSkills(16, Side.red, '兵', const [SkillType.pawn]));
   }
 
   /// 设置黑方初始棋子
   void _setupBlackPieces() {
     // 黑方车（0,0）和（8,0）
-    set(0, 0, Piece.withSkills(17, Side.black, '车', [SkillType.rook]));
-    set(8, 0, Piece.withSkills(18, Side.black, '车', [SkillType.rook]));
+    set(0, 0, Piece.withSkills(17, Side.black, '车', const [SkillType.rook]));
+    set(8, 0, Piece.withSkills(18, Side.black, '车', const [SkillType.rook]));
 
     // 黑方马（1,0）和（7,0）
-    set(1, 0, Piece.withSkills(19, Side.black, '馬', [SkillType.knight]));
-    set(7, 0, Piece.withSkills(20, Side.black, '馬', [SkillType.knight]));
+    set(1, 0, Piece.withSkills(19, Side.black, '馬', const [SkillType.knight]));
+    set(7, 0, Piece.withSkills(20, Side.black, '馬', const [SkillType.knight]));
 
     // 黑方象（2,0）和（6,0）
-    set(2, 0, Piece.withSkills(21, Side.black, '象', [SkillType.bishop]));
-    set(6, 0, Piece.withSkills(22, Side.black, '象', [SkillType.bishop]));
+    set(2, 0, Piece.withSkills(21, Side.black, '象', const [SkillType.bishop]));
+    set(6, 0, Piece.withSkills(22, Side.black, '象', const [SkillType.bishop]));
 
     // 黑方士（3,0）和（5,0）
-    set(3, 0, Piece.withSkills(23, Side.black, '士', [SkillType.advisor]));
-    set(5, 0, Piece.withSkills(24, Side.black, '士', [SkillType.advisor]));
+    set(3, 0, Piece.withSkills(23, Side.black, '士', const [SkillType.advisor]));
+    set(5, 0, Piece.withSkills(24, Side.black, '士', const [SkillType.advisor]));
 
     // 黑方将（4,0）
-    set(4, 0, Piece.withSkills(25, Side.black, '將', [SkillType.king]));
+    set(4, 0, Piece.withSkills(25, Side.black, '將', const [SkillType.king]));
 
     // 黑方炮（1,2）和（7,2）
-    set(1, 2, Piece.withSkills(26, Side.black, '炮', [SkillType.cannon]));
-    set(7, 2, Piece.withSkills(27, Side.black, '炮', [SkillType.cannon]));
+    set(1, 2, Piece.withSkills(26, Side.black, '炮', const [SkillType.cannon]));
+    set(7, 2, Piece.withSkills(27, Side.black, '炮', const [SkillType.cannon]));
 
     // 黑方卒（0,3）、（2,3）、（4,3）、（6,3）、（8,3）
-    set(0, 3, Piece.withSkills(28, Side.black, '卒', [SkillType.pawn]));
-    set(2, 3, Piece.withSkills(29, Side.black, '卒', [SkillType.pawn]));
-    set(4, 3, Piece.withSkills(30, Side.black, '卒', [SkillType.pawn]));
-    set(6, 3, Piece.withSkills(31, Side.black, '卒', [SkillType.pawn]));
-    set(8, 3, Piece.withSkills(32, Side.black, '卒', [SkillType.pawn]));
+    set(0, 3, Piece.withSkills(28, Side.black, '卒', const [SkillType.pawn]));
+    set(2, 3, Piece.withSkills(29, Side.black, '卒', const [SkillType.pawn]));
+    set(4, 3, Piece.withSkills(30, Side.black, '卒', const [SkillType.pawn]));
+    set(6, 3, Piece.withSkills(31, Side.black, '卒', const [SkillType.pawn]));
+    set(8, 3, Piece.withSkills(32, Side.black, '卒', const [SkillType.pawn]));
   }
 
   /// 创建初始棋盘布局

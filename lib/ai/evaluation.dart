@@ -3,7 +3,6 @@
 // 功能：评估棋盘局面，返回分数
 
 import '../models/game_state.dart';
-import '../models/piece.dart';
 import '../core/constants.dart';
 import '../skills/skill_types.dart';
 import '../core/move_generator.dart';
@@ -118,9 +117,12 @@ class Evaluator {
           for (final skill in piece.skillsList) {
             if (skill.typeId == SkillType.pawn) {
               // 根据阵营调整y坐标（黑方需要翻转）
-              final adjustedY = piece.side == Side.red ? y : (BoardConstants.boardHeight - 1 - y);
+              final adjustedY = piece.side == Side.red
+                  ? y
+                  : (BoardConstants.boardHeight - 1 - y);
 
-              final posValue = positionTables[SkillType.pawn]?[adjustedY][x] ?? 0;
+              final posValue =
+                  positionTables[SkillType.pawn]?[adjustedY][x] ?? 0;
 
               // 己方棋子加分，对方棋子减分
               if (piece.side == side) {
@@ -146,7 +148,8 @@ class Evaluator {
 
     // 计算对方合法走法数量
     final opponentSide = side == Side.red ? Side.black : Side.red;
-    final opponentMoves = MoveGenerator.getAllLegalMoves(gameState, opponentSide);
+    final opponentMoves =
+        MoveGenerator.getAllLegalMoves(gameState, opponentSide);
 
     // 机动性差值（权重较小）
     return (ourMoves.length - opponentMoves.length) * 10;

@@ -7,7 +7,6 @@ import 'player.dart';
 import '../models/move.dart';
 import '../models/game_state.dart';
 import '../models/skill.dart';
-import '../core/constants.dart';
 
 /// 本地玩家类
 ///
