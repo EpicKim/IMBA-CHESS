@@ -27,11 +27,28 @@ class MePlayer extends Player {
 
   @override
   Future<Move?> play(GameState gameState) async {
-    // 创建完成器，等待UI输入
+    // 本地玩家不通过 Future 返回，而是通过 UI 直接调用 game_provider
+    // 这里创建 Completer 只是为了保持接口一致，但实际上会被 cancel
     _moveCompleter = Completer<Move?>();
-
-    // 返回Future，等待UI调用submitMove
     return _moveCompleter!.future;
+  }
+
+  @override
+  void notifyMoveExecuted(Move move) {
+    // UI 已经执行了移动，完成 Future（避免内存泄漏）
+    if (_moveCompleter != null && !_moveCompleter!.isCompleted) {
+      _moveCompleter!.complete(move);
+      _moveCompleter = null;
+    }
+  }
+
+  @override
+  void notifySkillApplied(Skill skill) {
+    // UI 已经应用了技能，完成 Future（避免内存泄漏）
+    if (_skillCompleter != null && !_skillCompleter!.isCompleted) {
+      _skillCompleter!.complete(skill);
+      _skillCompleter = null;
+    }
   }
 
   /// 提交走法（由UI调用）

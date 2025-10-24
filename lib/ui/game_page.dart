@@ -120,10 +120,10 @@ class _GamePageState extends State<GamePage> {
 
                 SizedBox(height: 16.h),
 
-                // AI思考指示器
+                // 玩家操作等待指示器
                 Consumer<GameProvider>(
                   builder: (context, controller, _) {
-                    if (controller.isAIThinking) {
+                    if (controller.isWaitingForPlayer) {
                       return Card(
                         child: Padding(
                           padding: EdgeInsets.all(16.w),
@@ -131,7 +131,7 @@ class _GamePageState extends State<GamePage> {
                             children: [
                               const CircularProgressIndicator(),
                               SizedBox(width: 16.w),
-                              Text('AI思考中...',
+                              Text('等待玩家操作中...',
                                   style: TextStyle(fontSize: 20.sp)),
                             ],
                           ),
@@ -246,8 +246,8 @@ class _GamePageState extends State<GamePage> {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    // AI思考指示器
-                    if (controller.isAIThinking)
+                    // 玩家操作等待指示器
+                    if (controller.isWaitingForPlayer)
                       Container(
                         padding: EdgeInsets.all(16.w),
                         color: Colors.blue.shade50,
@@ -256,7 +256,8 @@ class _GamePageState extends State<GamePage> {
                           children: [
                             const CircularProgressIndicator(),
                             SizedBox(width: 16.w),
-                            Text('AI思考中...', style: TextStyle(fontSize: 20.sp)),
+                            Text('等待玩家操作中...',
+                                style: TextStyle(fontSize: 20.sp)),
                           ],
                         ),
                       ),

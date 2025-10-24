@@ -153,6 +153,7 @@ class _BoardWidgetState extends State<BoardWidget>
             gamePhase: widget.gamePhase,
             selectedSkill: widget.selectedSkill,
             currentSide: widget.currentSide,
+            localPlayerSide: widget.localPlayerSide,
             animationTime: _animationController.value * 2 * 3.14159, // 转换为弧度
           ),
         ),

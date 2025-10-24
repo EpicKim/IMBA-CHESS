@@ -55,4 +55,18 @@ abstract class Player {
 
   /// 是否是网络玩家
   bool get isOnline;
+
+  /// 通知玩家其选择的走法已被执行（可选实现）
+  ///
+  /// 用于本地玩家完成其 Future，AI/在线玩家可以忽略
+  void notifyMoveExecuted(Move move) {
+    // 默认实现：什么都不做（AI/在线玩家不需要）
+  }
+
+  /// 通知玩家其选择的技能已被应用（可选实现）
+  ///
+  /// 用于本地玩家完成其 Future，AI/在线玩家可以忽略
+  void notifySkillApplied(Skill skill) {
+    // 默认实现：什么都不做（AI/在线玩家不需要）
+  }
 }

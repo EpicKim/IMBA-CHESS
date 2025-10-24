@@ -53,6 +53,7 @@ class BoardPainter extends CustomPainter {
   final GamePhase? gamePhase; // 游戏阶段
   final Skill? selectedSkill; // 选中的技能
   final Side? currentSide; // 当前行动方
+  final Side? localPlayerSide; // 本地玩家阵营（用于判断技能赋予时的可选棋子）
   final double animationTime; // 动画时间（用于脉冲效果）
 
   BoardPainter({
@@ -64,6 +65,7 @@ class BoardPainter extends CustomPainter {
     this.gamePhase,
     this.selectedSkill,
     this.currentSide,
+    this.localPlayerSide,
     this.animationTime = 0.0,
   });
 
@@ -291,10 +293,11 @@ class BoardPainter extends CustomPainter {
 
         if (piece != null) {
           // 检查是否在技能赋予阶段需要绘制蓝色光圈提示
+          // 只有在selectPiece阶段（已选择技能卡，正在选择棋子）且是本地玩家的棋子时才显示
           if (gamePhase == GamePhase.selectPiece &&
               selectedSkill != null &&
-              currentSide != null &&
-              piece.side == currentSide &&
+              localPlayerSide != null &&
+              piece.side == localPlayerSide &&
               !piece.hasSkill(selectedSkill!.typeId)) {
             // 绘制蓝色光圈提示该棋子可以被赋予技能
             _drawSkillApplicableHalo(canvas, x, y);
@@ -470,6 +473,7 @@ class BoardPainter extends CustomPainter {
         oldDelegate.gamePhase != gamePhase ||
         oldDelegate.selectedSkill != selectedSkill ||
         oldDelegate.currentSide != currentSide ||
+        oldDelegate.localPlayerSide != localPlayerSide ||
         (oldDelegate.animationTime - animationTime).abs() > 0.01;
   }
 }
