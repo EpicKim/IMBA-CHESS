@@ -3,6 +3,7 @@
 // 功能：显示可用技能卡，支持技能选择
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/skill.dart';
 import '../../skills/skill_types.dart';
 import '../../core/constants.dart';
@@ -43,9 +44,9 @@ class SkillPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -53,27 +54,27 @@ class SkillPanel extends StatelessWidget {
             // 标题
             Row(
               children: [
-                const Icon(Icons.auto_awesome, size: 24),
-                const SizedBox(width: 8),
-                const Text(
+                Icon(Icons.auto_awesome, size: 32.sp),
+                SizedBox(width: 8.w),
+                Text(
                   '技能系统',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
             const Divider(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
 
             // 提示信息
             if (message.isNotEmpty) ...[
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   color: isSelecting ? Colors.blue.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
                     color: isSelecting ? Colors.blue : Colors.grey,
                   ),
@@ -83,14 +84,14 @@ class SkillPanel extends StatelessWidget {
                     Icon(
                       isSelecting ? Icons.info : Icons.check_circle,
                       color: isSelecting ? Colors.blue : Colors.green,
-                      size: 20,
+                      size: 28.sp,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Expanded(
                       child: Text(
                         message,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 18.sp,
                           color: isSelecting ? Colors.blue : Colors.grey[700],
                         ),
                       ),
@@ -98,26 +99,26 @@ class SkillPanel extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
             ],
 
             // 技能列表
             if (availableSkills.isEmpty) ...[
-              const Center(
+              Center(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: EdgeInsets.all(24.w),
                   child: Text(
                     '暂无可用技能',
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 14,
+                      fontSize: 18.sp,
                     ),
                   ),
                 ),
               ),
             ] else ...[
               SizedBox(
-                height: 300,
+                height: 300.h,
                 child: ListView.builder(
                   itemCount: availableSkills.length,
                   itemBuilder: (context, index) {
@@ -167,38 +168,38 @@ class _SkillCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: isSelected ? 8 : 2,
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      margin: EdgeInsets.symmetric(vertical: 4.h),
       color: isSelected ? Colors.blue.shade50 : null,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
           child: Row(
             children: [
               // 技能图标
               Container(
-                width: 48,
-                height: 48,
+                width: 64.w,
+                height: 64.w,
                 decoration: BoxDecoration(
                   color: _getSkillColor(skill.typeId).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
                     color: _getSkillColor(skill.typeId),
-                    width: 2,
+                    width: 3.w,
                   ),
                 ),
                 child: Center(
                   child: Text(
                     _getSkillIcon(skill.typeId),
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 32.sp,
                       color: _getSkillColor(skill.typeId),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
 
               // 技能信息
               Expanded(
@@ -208,16 +209,16 @@ class _SkillCard extends StatelessWidget {
                     Text(
                       skill.getDisplayName(currentSide),
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 22.sp,
                         fontWeight: FontWeight.bold,
                         color: isSelected ? Colors.blue : Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       _getSkillDescription(skill.typeId),
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 16.sp,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -228,15 +229,15 @@ class _SkillCard extends StatelessWidget {
               // 选中指示器
               if (isSelected)
                 Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
+                  padding: EdgeInsets.all(6.w),
+                  decoration: const BoxDecoration(
                     color: Colors.blue,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.check,
                     color: Colors.white,
-                    size: 20,
+                    size: 28.sp,
                   ),
                 ),
             ],

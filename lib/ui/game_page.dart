@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../controllers/game_controller.dart';
 import 'board/board_widget.dart';
 import 'panels/info_panel.dart';
@@ -125,7 +126,7 @@ class _GamePageState extends State<GamePage> {
         Expanded(
           flex: 2,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
                 // 信息面板
@@ -146,7 +147,7 @@ class _GamePageState extends State<GamePage> {
                   },
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // AI思考指示器
                 Consumer<GameController>(
@@ -154,12 +155,12 @@ class _GamePageState extends State<GamePage> {
                     if (controller.isAIThinking) {
                       return Card(
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(16.w),
                           child: Row(
                             children: [
                               const CircularProgressIndicator(),
-                              const SizedBox(width: 16),
-                              const Text('AI思考中...'),
+                              SizedBox(width: 16.w),
+                              Text('AI思考中...', style: TextStyle(fontSize: 20.sp)),
                             ],
                           ),
                         ),
@@ -197,7 +198,7 @@ class _GamePageState extends State<GamePage> {
         Expanded(
           flex: 2,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Consumer<GameController>(
               builder: (context, controller, _) {
                 return SkillPanel(
@@ -258,21 +259,21 @@ class _GamePageState extends State<GamePage> {
                     // AI思考指示器
                     if (controller.isAIThinking)
                       Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(16.w),
                         color: Colors.blue.shade50,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const CircularProgressIndicator(),
-                            const SizedBox(width: 16),
-                            const Text('AI思考中...'),
+                            SizedBox(width: 16.w),
+                            Text('AI思考中...', style: TextStyle(fontSize: 20.sp)),
                           ],
                         ),
                       ),
 
                     // 简化的信息显示
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16.w),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -306,11 +307,12 @@ class _GamePageState extends State<GamePage> {
   /// 构建信息芯片
   Widget _buildInfoChip(String label, String value, {Color? color}) {
     return Chip(
-      label: Text('$label: $value'),
+      label: Text('$label: $value', style: TextStyle(fontSize: 18.sp)),
       backgroundColor: color?.withOpacity(0.2),
       labelStyle: TextStyle(
         color: color ?? Colors.black,
         fontWeight: FontWeight.bold,
+        fontSize: 18.sp,
       ),
     );
   }

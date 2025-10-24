@@ -3,6 +3,7 @@
 // 功能：显示游戏信息（当前回合、选中棋子、合法移动数等）
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/game_state.dart';
 import '../../models/piece.dart';
 import '../../models/move.dart';
@@ -32,23 +33,23 @@ class InfoPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             // 标题
-            const Text(
+            Text(
               '游戏信息',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const Divider(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
 
             // 当前回合信息
             _buildInfoRow(
@@ -61,9 +62,9 @@ class InfoPanel extends StatelessWidget {
               color: gameState.sideToMove == Side.red ? Colors.red : Colors.blueGrey,
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             const Divider(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
 
             // 选中棋子信息
             if (selectedPiece != null) ...[
@@ -82,37 +83,37 @@ class InfoPanel extends StatelessWidget {
               ),
 
               // 技能列表
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: 8.h),
+              Text(
                 '拥有技能：',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 18.sp,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               ...selectedPiece!.skillsList.map((skill) {
                 return Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 2),
+                  padding: EdgeInsets.only(left: 16.w, top: 2.h),
                   child: Text(
                     '• ${skill.getDisplayName(selectedPiece!.side)}',
-                    style: const TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 16.sp),
                   ),
                 );
               }),
             ] else ...[
-              const Text(
+              Text(
                 '未选中棋子',
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 14,
+                  fontSize: 18.sp,
                 ),
               ),
             ],
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             const Divider(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
 
             // 游戏统计信息
             _buildInfoRow(
@@ -126,23 +127,24 @@ class InfoPanel extends StatelessWidget {
 
             // 游戏状态警告
             if (gameState.isInCheck()) ...[
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(4.r),
                   border: Border.all(color: Colors.red),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.warning, color: Colors.red, size: 20),
-                    SizedBox(width: 8),
+                    Icon(Icons.warning, color: Colors.red, size: 28.sp),
+                    SizedBox(width: 8.w),
                     Text(
                       '将军！',
                       style: TextStyle(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
+                        fontSize: 22.sp,
                       ),
                     ),
                   ],
@@ -158,26 +160,26 @@ class InfoPanel extends StatelessWidget {
   /// 构建信息行
   Widget _buildInfoRow(String label, String value, {Color? color}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             child: Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: 18.sp,
                 color: Colors.grey,
               ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Flexible(
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),

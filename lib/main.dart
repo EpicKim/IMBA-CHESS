@@ -4,9 +4,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:window_manager/window_manager.dart';
 import 'ui/game_page.dart';
 
-void main() {
+void main() async {
+  // 确保 Flutter 绑定已初始化
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 初始化窗口管理器并设置窗口化最大
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    center: true,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.maximize();
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const ImbaChessApp());
 }
 
@@ -18,7 +37,7 @@ class ImbaChessApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // 使用 ScreenUtilInit 进行屏幕适配
     return ScreenUtilInit(
-      // 设计稿尺寸（基于原LÖVE2D项目的默认窗口）
+      // 设计稿尺寸（减小设计尺寸，让字体和UI元素相对更大）
       designSize: const Size(1600, 1000),
       minTextAdapt: true,
       splitScreenMode: true,

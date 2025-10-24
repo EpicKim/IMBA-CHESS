@@ -101,7 +101,7 @@ class BoardPainter extends CustomPainter {
   void _drawGrid(Canvas canvas) {
     final paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 2.0
+      ..strokeWidth = gridSystem.cellSize * 0.032
       ..style = PaintingStyle.stroke;
 
     // 绘制横线
@@ -160,7 +160,7 @@ class BoardPainter extends CustomPainter {
   void _drawSpecialMarks(Canvas canvas) {
     final paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 1.5
+      ..strokeWidth = gridSystem.cellSize * 0.024
       ..style = PaintingStyle.stroke;
 
     // 炮位和兵位的标记位置
@@ -181,8 +181,9 @@ class BoardPainter extends CustomPainter {
   /// 绘制位置标记（小角标）
   void _drawPositionMark(Canvas canvas, int x, int y, Paint paint) {
     final center = gridSystem.gridToScreen(x, y);
-    const markSize = 8.0;
-    const markOffset = 12.0;
+    // 标记尺寸基于cellSize动态计算
+    final markSize = gridSystem.cellSize * 0.13;
+    final markOffset = gridSystem.cellSize * 0.19;
 
     // 绘制四个角的标记
     final corners = [
@@ -243,13 +244,13 @@ class BoardPainter extends CustomPainter {
     for (final move in moves) {
       final center = gridSystem.gridToScreen(move.to.x, move.to.y);
 
-      // 如果是吃子，绘制大圆圈；否则绘制小圆点
-      final radius = move.isCapture ? 25.0 : 8.0;
+      // 如果是吃子，绘制大圆圈；否则绘制小圆点，基于cellSize动态计算
+      final radius = move.isCapture ? gridSystem.cellSize * 0.4 : gridSystem.cellSize * 0.13;
 
       if (move.isCapture) {
         // 吃子：绘制空心圆
         paint.style = PaintingStyle.stroke;
-        paint.strokeWidth = 3.0;
+        paint.strokeWidth = gridSystem.cellSize * 0.05;
       } else {
         // 移动：绘制实心圆
         paint.style = PaintingStyle.fill;
@@ -281,7 +282,8 @@ class BoardPainter extends CustomPainter {
   /// 绘制可赋予技能的蓝色光圈（固定不闪烁）
   void _drawSkillApplicableHalo(Canvas canvas, int x, int y) {
     final center = gridSystem.gridToScreen(x, y);
-    const radius = 28.0; // 基础半径
+    // 基础半径基于cellSize动态计算
+    final radius = gridSystem.cellSize * 0.45;
 
     // 最外层蓝色光晕
     final paint1 = Paint()
@@ -298,21 +300,21 @@ class BoardPainter extends CustomPainter {
     // 外环蓝色
     final paint3 = Paint()
       ..color = const Color.fromRGBO(102, 178, 255, 0.65)
-      ..strokeWidth = 4.0
+      ..strokeWidth = gridSystem.cellSize * 0.065
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius * 1.26, paint3);
 
     // 中环亮蓝色
     final paint4 = Paint()
       ..color = const Color.fromRGBO(128, 204, 255, 0.75)
-      ..strokeWidth = 2.5
+      ..strokeWidth = gridSystem.cellSize * 0.04
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius * 1.12, paint4);
 
     // 内环最亮蓝色
     final paint5 = Paint()
       ..color = const Color.fromRGBO(153, 217, 255, 0.85)
-      ..strokeWidth = 1.5
+      ..strokeWidth = gridSystem.cellSize * 0.025
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(center, radius * 1.03, paint5);
   }
@@ -320,7 +322,8 @@ class BoardPainter extends CustomPainter {
   /// 绘制单个棋子
   void _drawPiece(Canvas canvas, Piece piece, int x, int y) {
     final center = gridSystem.gridToScreen(x, y);
-    const radius = 22.0;
+    // 棋子半径基于cellSize动态计算（增大到0.42）
+    final radius = gridSystem.cellSize * 0.42;
 
     // 绘制棋子底色
     final bgPaint = Paint()
@@ -332,17 +335,17 @@ class BoardPainter extends CustomPainter {
     // 绘制棋子边框
     final borderPaint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 2.0
+      ..strokeWidth = gridSystem.cellSize * 0.04
       ..style = PaintingStyle.stroke;
 
     canvas.drawCircle(center, radius, borderPaint);
 
-    // 绘制棋子文字
+    // 绘制棋子文字，字体大小基于cellSize动态计算（增大到0.40）
     final textSpan = TextSpan(
       text: piece.label,
       style: TextStyle(
         color: Colors.white,
-        fontSize: 20.0,
+        fontSize: gridSystem.cellSize * 0.40,
         fontWeight: FontWeight.bold,
         fontFamily: 'DingLieZhuHai',
       ),
@@ -374,25 +377,28 @@ class BoardPainter extends CustomPainter {
       final badgeX = center.dx + math.cos(angle) * (radius * 0.75);
       final badgeY = center.dy + math.sin(angle) * (radius * 0.75);
 
+      // 徽章半径基于cellSize动态计算（增大到0.19）
+      final badgeRadius = gridSystem.cellSize * 0.19;
+
       // 绘制徽章底色（金黄色）
       final badgePaint = Paint()
         ..color = const Color.fromRGBO(255, 217, 51, 0.9)
         ..style = PaintingStyle.fill;
-      canvas.drawCircle(Offset(badgeX, badgeY), 10, badgePaint);
+      canvas.drawCircle(Offset(badgeX, badgeY), badgeRadius, badgePaint);
 
       // 绘制徽章边框
       final badgeBorderPaint = Paint()
         ..color = const Color.fromRGBO(76, 51, 25, 1.0)
-        ..strokeWidth = 1.5
+        ..strokeWidth = gridSystem.cellSize * 0.03
         ..style = PaintingStyle.stroke;
-      canvas.drawCircle(Offset(badgeX, badgeY), 10, badgeBorderPaint);
+      canvas.drawCircle(Offset(badgeX, badgeY), badgeRadius, badgeBorderPaint);
 
-      // 绘制徽章文字（技能名称，根据棋子阵营显示）
+      // 绘制徽章文字（技能名称，根据棋子阵营显示，增大到0.19）
       final badgeTextSpan = TextSpan(
         text: skill.getDisplayName(piece.side),
-        style: const TextStyle(
-          color: Color.fromRGBO(51, 25, 0, 1.0),
-          fontSize: 10.0,
+        style: TextStyle(
+          color: const Color.fromRGBO(51, 25, 0, 1.0),
+          fontSize: gridSystem.cellSize * 0.19,
           fontWeight: FontWeight.bold,
           fontFamily: 'DingLieZhuHai',
         ),

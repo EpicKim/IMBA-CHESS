@@ -5,9 +5,9 @@
 import 'package:equatable/equatable.dart';
 import 'board.dart';
 import 'move.dart';
-import 'piece.dart';
 import '../core/constants.dart';
 import '../core/move_generator.dart';
+import '../skills/skill_types.dart';
 
 /// 游戏状态类
 ///
@@ -212,10 +212,36 @@ class GameState extends Equatable {
     return false;
   }
 
+  /// 检查指定方是否输了（所有棋子都没有king技能）
+  ///
+  /// 参数:
+  /// - side: 要检查的阵营
+  ///
+  /// 返回: true=该方输了，false=该方还有king技能的棋子
+  bool hasPlayerLost(Side side) {
+    // 遍历棋盘，检查该方是否还有拥有king技能的棋子
+    for (var y = 0; y < BoardConstants.boardHeight; y++) {
+      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+        final piece = board.get(x, y);
+        if (piece != null && piece.side == side && piece.hasSkill(SkillType.king)) {
+          // 找到一个拥有king技能的棋子，该方未输
+          return false;
+        }
+      }
+    }
+    // 没有找到任何拥有king技能的棋子，该方输了
+    return true;
+  }
+
   /// 检查游戏是否结束
   ///
   /// 返回: true=游戏结束，false=游戏继续
   bool isGameOver() {
+    // 检查是否有一方输了（没有king技能的棋子）
+    if (hasPlayerLost(Side.red) || hasPlayerLost(Side.black)) {
+      return true;
+    }
+
     return isCheckmate() || isDraw();
   }
 
@@ -227,6 +253,14 @@ class GameState extends Equatable {
   /// - 'draw': 和棋
   /// - null: 游戏未结束
   String? getResult() {
+    // 优先检查是否有一方输了（没有king技能的棋子）
+    if (hasPlayerLost(Side.red)) {
+      return 'black_win';
+    }
+    if (hasPlayerLost(Side.black)) {
+      return 'red_win';
+    }
+
     if (isCheckmate()) {
       // 当前行动方被将死，对方获胜
       return sideToMove == Side.red ? 'black_win' : 'red_win';

@@ -50,6 +50,9 @@ dependencies:
   # 屏幕适配
   flutter_screenutil: ^5.9.3
 
+  # 窗口管理（用于全屏设置）
+  window_manager: ^0.3.9
+
   # 字体
   google_fonts: ^6.2.1
 
