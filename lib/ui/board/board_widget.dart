@@ -79,7 +79,6 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
   /// 初始化坐标系统
   void _initGridSystem() {
     gridSystem = GridSystem(
-      boardOffset: const Offset(BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
       cellSize: 60.0, // 默认值，实际会在 build 中动态计算
     );
     if (widget.localPlayerSide != null) {
@@ -117,7 +116,6 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
   /// 更新坐标系统（boardOffset 只是棋盘内部边距）
   void _updateGridSystem(double cellSize) {
     gridSystem = GridSystem(
-      boardOffset: const Offset(BoardWidgetConfig.boardPadding, BoardWidgetConfig.boardPadding),
       cellSize: cellSize,
     );
     if (widget.localPlayerSide != null) {
