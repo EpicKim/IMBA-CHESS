@@ -78,8 +78,8 @@ class ChessFlameGame extends FlameGame {
     // 计算cellSize（与原逻辑一致：85%空间+40px边距）
     final availableWidth = size.x * 0.85;
     final availableHeight = size.y * 0.85;
-    final cellSizeByWidth = availableWidth / BoardConstants.boardWidth;
-    final cellSizeByHeight = availableHeight / BoardConstants.boardHeight;
+    final cellSizeByWidth = availableWidth / BoardConstants.cols;
+    final cellSizeByHeight = availableHeight / BoardConstants.rows;
     final cellSize = cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
 
     print('[ChessFlameGame] 计算得到cellSize: $cellSize');
@@ -93,8 +93,8 @@ class ChessFlameGame extends FlameGame {
     }
 
     // 计算棋盘组件的尺寸（纯网格尺寸，无额外边距）
-    final boardWidth = BoardConstants.boardWidth * cellSize;
-    final boardHeight = BoardConstants.boardHeight * cellSize;
+    final boardWidth = BoardConstants.cols * cellSize - 100;
+    final boardHeight = BoardConstants.rows * cellSize;
 
     // 计算棋盘组件在Flame世界中的居中位置
     final boardOffsetX = (size.x - boardWidth) / 2;
@@ -178,8 +178,8 @@ class ChessFlameGame extends FlameGame {
 
     // 收集当前棋盘上的棋子
     final currentPieces = <String, Piece>{};
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
         if (piece != null) {
           currentPieces['$x,$y'] = piece;
@@ -349,8 +349,8 @@ class ChessFlameGame extends FlameGame {
     if (uiState.phase == TurnPhase.selectPiece && uiState.selectedSkill != null && provider != null) {
       final localPlayerSide = provider!.localPlayerSide;
 
-      for (var y = 0; y < BoardConstants.boardHeight; y++) {
-        for (var x = 0; x < BoardConstants.boardWidth; x++) {
+      for (var y = 0; y < BoardConstants.rows; y++) {
+        for (var x = 0; x < BoardConstants.cols; x++) {
           final piece = gameState.board.get(x, y);
 
           // 检查是否是本地玩家的棋子且未拥有该技能

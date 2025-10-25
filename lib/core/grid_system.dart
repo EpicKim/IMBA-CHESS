@@ -51,8 +51,8 @@ class GridSystem {
 
     // 如果本地玩家是黑方，需要翻转坐标
     if (localPlayerSide == Side.black) {
-      gridX = BoardConstants.boardWidth - 1 - gridX;
-      gridY = BoardConstants.boardHeight - 1 - gridY;
+      gridX = BoardConstants.cols - 1 - gridX;
+      gridY = BoardConstants.rows - 1 - gridY;
     }
 
     // 检查是否在棋盘范围内
@@ -79,8 +79,8 @@ class GridSystem {
     var displayY = gridY;
 
     if (localPlayerSide == Side.black) {
-      displayX = BoardConstants.boardWidth - 1 - gridX;
-      displayY = BoardConstants.boardHeight - 1 - gridY;
+      displayX = BoardConstants.cols - 1 - gridX;
+      displayY = BoardConstants.rows - 1 - gridY;
     }
 
     // 计算屏幕坐标（网格线交叉点）
@@ -173,8 +173,8 @@ class GridSystem {
     return Rect.fromLTWH(
       0,
       0,
-      BoardConstants.boardWidth * cellSize,
-      BoardConstants.boardHeight * cellSize,
+      BoardConstants.cols * cellSize,
+      BoardConstants.rows * cellSize,
     );
   }
 }

@@ -100,15 +100,15 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
 
   /// 计算格子大小（基于可用空间）
   double _calculateCellSize(BoxConstraints constraints) {
-    final cellSizeByWidth = (constraints.maxWidth * BoardWidgetConfig.boardSizeRatio) / BoardConstants.boardWidth;
-    final cellSizeByHeight = (constraints.maxHeight * BoardWidgetConfig.boardSizeRatio) / BoardConstants.boardHeight;
+    final cellSizeByWidth = (constraints.maxWidth * BoardWidgetConfig.boardSizeRatio) / BoardConstants.cols;
+    final cellSizeByHeight = (constraints.maxHeight * BoardWidgetConfig.boardSizeRatio) / BoardConstants.rows;
     return cellSizeByWidth < cellSizeByHeight ? cellSizeByWidth : cellSizeByHeight;
   }
 
   /// 计算棋盘实际尺寸（格子大小 × 格子数量 + 内边距）
   Size _calculateBoardSize(double cellSize) {
-    final width = BoardConstants.boardWidth * cellSize;
-    final height = BoardConstants.boardHeight * cellSize;
+    final width = BoardConstants.cols * cellSize;
+    final height = BoardConstants.rows * cellSize;
     return Size(width, height);
   }
 

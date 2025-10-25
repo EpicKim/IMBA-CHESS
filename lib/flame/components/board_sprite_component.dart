@@ -56,8 +56,8 @@ class BoardSpriteComponent extends PositionComponent with TapCallbacks {
 
     // 设置组件尺寸（纯网格尺寸，无额外边距）
     size = Vector2(
-      BoardConstants.boardWidth * gridSystem.cellSize,
-      BoardConstants.boardHeight * gridSystem.cellSize,
+      BoardConstants.cols * gridSystem.cellSize,
+      BoardConstants.rows * gridSystem.cellSize,
     );
 
     print('[BoardSpriteComponent] 加载完成 - size: $size, anchor: $anchor, cellSize: ${gridSystem.cellSize}');
@@ -127,18 +127,18 @@ class BoardSpriteComponent extends PositionComponent with TapCallbacks {
       ..style = PaintingStyle.stroke;
 
     // 绘制横线
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
       final startPos = gridSystem.gridToScreen(0, y);
-      final endPos = gridSystem.gridToScreen(BoardConstants.boardWidth - 1, y);
+      final endPos = gridSystem.gridToScreen(BoardConstants.cols - 1, y);
       canvas.drawLine(startPos, endPos, paint);
     }
 
     // 绘制竖线
-    for (var x = 0; x < BoardConstants.boardWidth; x++) {
-      if (x == 0 || x == BoardConstants.boardWidth - 1) {
+    for (var x = 0; x < BoardConstants.cols; x++) {
+      if (x == 0 || x == BoardConstants.cols - 1) {
         // 左右边界线：完整绘制
         final start = gridSystem.gridToScreen(x, 0);
-        final end = gridSystem.gridToScreen(x, BoardConstants.boardHeight - 1);
+        final end = gridSystem.gridToScreen(x, BoardConstants.rows - 1);
         canvas.drawLine(start, end, paint);
       } else {
         // 中间竖线：楚河处断开

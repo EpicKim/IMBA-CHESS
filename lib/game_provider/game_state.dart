@@ -220,8 +220,8 @@ class GameState extends Equatable {
   /// 返回: true=该方输了，false=该方还有king技能的棋子
   bool hasPlayerLost(Side side) {
     // 遍历棋盘，检查该方是否还有拥有king技能的棋子
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
         if (piece != null && piece.side == side && piece.hasSkill(SkillType.king)) {
           // 找到一个拥有king技能的棋子，该方未输
@@ -280,8 +280,8 @@ class GameState extends Equatable {
     final buffer = StringBuffer();
 
     // 遍历棋盘
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         if (piece != null) {

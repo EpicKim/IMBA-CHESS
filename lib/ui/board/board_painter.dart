@@ -105,8 +105,8 @@ class BoardPainter extends CustomPainter {
     // 计算棋盘实际区域（从第一个格子到最后一个格子）
     final topLeft = gridSystem.gridToScreen(0, 0);
     final bottomRight = gridSystem.gridToScreen(
-      BoardConstants.boardWidth - 1,
-      BoardConstants.boardHeight - 1,
+      BoardConstants.cols - 1,
+      BoardConstants.rows - 1,
     );
 
     canvas.drawRect(
@@ -123,19 +123,19 @@ class BoardPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     // 绘制横线
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
       final startPos = gridSystem.gridToScreen(0, y);
-      final endPos = gridSystem.gridToScreen(BoardConstants.boardWidth - 1, y);
+      final endPos = gridSystem.gridToScreen(BoardConstants.cols - 1, y);
 
       canvas.drawLine(startPos, endPos, paint);
     }
 
     // 绘制竖线
-    for (var x = 0; x < BoardConstants.boardWidth; x++) {
-      if (x == 0 || x == BoardConstants.boardWidth - 1) {
+    for (var x = 0; x < BoardConstants.cols; x++) {
+      if (x == 0 || x == BoardConstants.cols - 1) {
         // 左右边界线：完整绘制（y=0 到 y=9）
         final start = gridSystem.gridToScreen(x, 0);
-        final end = gridSystem.gridToScreen(x, BoardConstants.boardHeight - 1);
+        final end = gridSystem.gridToScreen(x, BoardConstants.rows - 1);
         canvas.drawLine(start, end, paint);
       } else {
         // 中间竖线：楚河处断开
@@ -295,8 +295,8 @@ class BoardPainter extends CustomPainter {
 
   /// 绘制所有棋子
   void _drawPieces(Canvas canvas) {
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         if (piece != null) {

@@ -85,8 +85,8 @@ class MoveGenerator {
     final allMoves = <Move>[];
 
     // 遍历棋盘上的所有位置
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         // 如果该位置有己方棋子

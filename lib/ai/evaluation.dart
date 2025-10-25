@@ -34,8 +34,8 @@ class Evaluator {
     int opponentKings = 0;
     final opponentSide = side == Side.red ? Side.black : Side.red;
 
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = gameState.board.get(x, y);
         if (piece != null && piece.hasSkill(SkillType.king)) {
           if (piece.side == side) {
@@ -118,8 +118,8 @@ class Evaluator {
     final opponentSide = side == Side.red ? Side.black : Side.red;
     final opponentKingValue = getKingValue(gameState, opponentSide);
 
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         if (piece != null) {
@@ -155,8 +155,8 @@ class Evaluator {
     int score = 0;
     final board = gameState.board;
 
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         if (piece != null) {
@@ -164,7 +164,7 @@ class Evaluator {
           for (final skill in piece.skillsList) {
             if (skill.typeId == SkillType.pawn) {
               // 根据阵营调整y坐标（黑方需要翻转）
-              final adjustedY = piece.side == Side.red ? y : (BoardConstants.boardHeight - 1 - y);
+              final adjustedY = piece.side == Side.red ? y : (BoardConstants.rows - 1 - y);
 
               final posValue = positionTables[SkillType.pawn]?[adjustedY][x] ?? 0;
 

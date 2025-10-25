@@ -556,8 +556,8 @@ class GameProvider extends ChangeNotifier {
     // 收集所有己方棋子
     final candidates = <({Piece piece, int x, int y, int priority})>[];
 
-    for (var y = 0; y < BoardConstants.boardHeight; y++) {
-      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+    for (var y = 0; y < BoardConstants.rows; y++) {
+      for (var x = 0; x < BoardConstants.cols; x++) {
         final piece = board.get(x, y);
 
         if (piece != null && piece.side == side) {
