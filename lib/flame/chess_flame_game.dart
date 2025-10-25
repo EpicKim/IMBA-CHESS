@@ -51,8 +51,11 @@ class ChessFlameGame extends FlameGame {
   /// 构造函数
   ChessFlameGame() : super();
 
+  // @override
+  // Color backgroundColor() => const Color(0xFFF5F5DC); // 设置游戏背景色为米色
+
   @override
-  Color backgroundColor() => const Color(0xFFF5F5DC); // 设置游戏背景色为米色
+  Color backgroundColor() => const Color.fromARGB(255, 255, 255, 255);
 
   @override
   Future<void> onLoad() async {
@@ -92,9 +95,9 @@ class ChessFlameGame extends FlameGame {
       gridSystem.setLocalPlayerSide(provider!.localPlayerSide);
     }
 
-    // 计算棋盘组件的尺寸（网格尺寸 + 内部边距）
-    final boardWidth = BoardConstants.boardWidth * cellSize + gridSystem.boardOffset.dx * 2;
-    final boardHeight = BoardConstants.boardHeight * cellSize + gridSystem.boardOffset.dy * 2;
+    // 计算棋盘组件的尺寸（纯网格尺寸，无额外边距）
+    final boardWidth = BoardConstants.boardWidth * cellSize;
+    final boardHeight = BoardConstants.boardHeight * cellSize;
 
     // 计算棋盘组件在Flame世界中的居中位置
     final boardOffsetX = (size.x - boardWidth) / 2;
@@ -240,20 +243,27 @@ class ChessFlameGame extends FlameGame {
     if (boardSprite == null) return;
 
     print('[ChessFlameGame] 同步棋子位置... cellSize=${gridSystem.cellSize}, boardOffset=${gridSystem.boardOffset}');
+    print('[ChessFlameGame] BoardSprite position=${boardSprite!.position}, size=${boardSprite!.size}, anchor=${boardSprite!.anchor}');
 
     var count = 0;
     // 更新所有现有棋子的位置
     boardSprite!.pieces.forEach((key, component) {
       if (component is PieceSpriteComponent) {
-        final screenPos = gridSystem.gridToScreen(component.gridX, component.gridY);
-        component.position = Vector2(screenPos.dx, screenPos.dy);
+        // 使用相对于父组件的坐标
+        final componentPos = gridSystem.gridToComponentCoord(component.gridX, component.gridY);
+        component.position = Vector2(componentPos.dx, componentPos.dy);
         final radius = gridSystem.cellSize * BoardUIConfig.pieceRadius;
         component.size = Vector2(radius * 2, radius * 2);
         count++;
 
-        // 打印所有棋子的位置作为调试
+        // 特别关注 (0,0) 位置的黑车
+        if (component.gridX == 0 && component.gridY == 0) {
+          print('[ChessFlameGame] ⭐ 黑车(0,0): componentPos=$componentPos, position=${component.position}, size=${component.size}, anchor=${component.anchor}');
+        }
+
+        // 打印前5个棋子的位置
         if (count <= 5) {
-          print('[ChessFlameGame] 更新棋子 grid(${component.gridX},${component.gridY}) -> screenPos($screenPos) -> position(${component.position})');
+          print('[ChessFlameGame] 更新棋子 grid(${component.gridX},${component.gridY}) -> componentPos($componentPos) -> position(${component.position})');
         }
       }
     });

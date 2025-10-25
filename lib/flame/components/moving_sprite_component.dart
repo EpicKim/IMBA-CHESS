@@ -41,9 +41,9 @@ class MovingSpriteComponent extends PieceSpriteComponent {
 
   /// 计算旋转角度
   void _calculateRotation() {
-    // 计算从当前位置到目标位置的方向
-    final fromPos = gridSystem.gridToScreen(gridX, gridY);
-    final toPos = gridSystem.gridToScreen(targetX, targetY);
+    // 计算从当前位置到目标位置的方向（使用相对于父组件的坐标）
+    final fromPos = gridSystem.gridToComponentCoord(gridX, gridY);
+    final toPos = gridSystem.gridToComponentCoord(targetX, targetY);
 
     final dx = toPos.dx - fromPos.dx;
     final dy = toPos.dy - fromPos.dy;
@@ -57,9 +57,9 @@ class MovingSpriteComponent extends PieceSpriteComponent {
 
   /// 开始移动动画
   void _startMoveAnimation() {
-    // 计算目标屏幕坐标
-    final targetScreenPos = gridSystem.gridToScreen(targetX, targetY);
-    final targetVector = Vector2(targetScreenPos.dx, targetScreenPos.dy);
+    // 计算目标坐标（相对于父组件）
+    final targetComponentPos = gridSystem.gridToComponentCoord(targetX, targetY);
+    final targetVector = Vector2(targetComponentPos.dx, targetComponentPos.dy);
 
     // 添加移动效果（0.5秒移动到目标位置）
     final moveEffect = MoveEffect.to(

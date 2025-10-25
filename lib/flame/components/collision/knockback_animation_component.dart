@@ -4,10 +4,10 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flame/components.dart';
-import '../../models/piece.dart';
-import '../../core/grid_system.dart';
-import 'piece_sprite_component.dart';
-import '../sprite_cache.dart';
+import '../../../models/piece.dart';
+import '../../../core/grid_system.dart';
+import '../piece_sprite_component.dart';
+import '../../sprite_cache.dart';
 
 /// 撞飞动画组件
 /// Cannon吃子时，被吃棋子的撞飞效果（沿移动方向飞出、旋转、缩小）

@@ -24,9 +24,9 @@ class SkillApplicableHaloComponent extends PositionComponent {
 
   @override
   Future<void> onLoad() async {
-    // 设置位置
-    final screenPos = gridSystem.gridToScreen(gridX, gridY);
-    position = Vector2(screenPos.dx, screenPos.dy);
+    // 设置位置：使用相对于父组件（BoardSpriteComponent）的坐标
+    final componentPos = gridSystem.gridToComponentCoord(gridX, gridY);
+    position = Vector2(componentPos.dx, componentPos.dy);
 
     // 设置尺寸
     final radius = gridSystem.cellSize * 0.45 * 1.4; // 最外层半径

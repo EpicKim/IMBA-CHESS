@@ -54,10 +54,10 @@ class BoardSpriteComponent extends PositionComponent with TapCallbacks {
     // 设置锚点为左上角，这样子组件的相对坐标就是从(0,0)开始
     anchor = Anchor.topLeft;
 
-    // 设置组件尺寸（包含边距）
+    // 设置组件尺寸（纯网格尺寸，无额外边距）
     size = Vector2(
-      BoardConstants.boardWidth * gridSystem.cellSize + gridSystem.boardOffset.dx * 2,
-      BoardConstants.boardHeight * gridSystem.cellSize + gridSystem.boardOffset.dy * 2,
+      BoardConstants.boardWidth * gridSystem.cellSize,
+      BoardConstants.boardHeight * gridSystem.cellSize,
     );
 
     print('[BoardSpriteComponent] 加载完成 - size: $size, anchor: $anchor, cellSize: ${gridSystem.cellSize}');
@@ -112,15 +112,9 @@ class BoardSpriteComponent extends PositionComponent with TapCallbacks {
       ..color = BoardUIConfig.boardBackgroundColor
       ..style = PaintingStyle.fill;
 
-    // 计算棋盘实际区域
-    final topLeft = gridSystem.gridToScreen(0, 0);
-    final bottomRight = gridSystem.gridToScreen(
-      BoardConstants.boardWidth - 1,
-      BoardConstants.boardHeight - 1,
-    );
-
+    // 棋盘占满整个组件
     canvas.drawRect(
-      Rect.fromLTRB(topLeft.dx, topLeft.dy, bottomRight.dx, bottomRight.dy),
+      Rect.fromLTWH(0, 0, size.x, size.y),
       paint,
     );
   }

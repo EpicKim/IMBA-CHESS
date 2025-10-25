@@ -45,25 +45,22 @@ class PieceSpriteComponent extends PositionComponent {
 
   @override
   Future<void> onLoad() async {
-    // 根据棋子技能加载对应精灵
-    _loadSprite();
-
-    // 设置位置：gridSystem.gridToScreen 返回的坐标包含了 boardOffset
-    // 这个坐标是相对于 BoardSpriteComponent 左上角的
-    final screenPos = gridSystem.gridToScreen(gridX, gridY);
-
-    // ✅ 终极修复：直接使用 gridToScreen 返回的坐标
-    // 这个坐标应该和网格线绘制使用的坐标一致
-    position = Vector2(screenPos.dx, screenPos.dy);
+    // 设置位置：使用相对于父组件（BoardSpriteComponent）的坐标
+    // gridToComponentCoord 返回的是相对于父组件左上角的坐标
+    final componentPos = gridSystem.gridToComponentCoord(gridX, gridY);
+    position = Vector2(componentPos.dx, componentPos.dy);
 
     // 设置尺寸
     final radius = gridSystem.cellSize * BoardUIConfig.pieceRadius;
     size = Vector2(radius * 2, radius * 2);
 
-    // 设置锚点为中心
-    anchor = Anchor.center;
+    // 设置锚点为中心（position 指向棋子中心，正好对齐网格线交叉点）
+    anchor = Anchor.topLeft;
 
-    print('[PieceSpriteComponent.onLoad] 棋子(${piece.label}) grid($gridX,$gridY) -> position($position)');
+    // 根据棋子技能加载对应精灵
+    _loadSprite();
+
+    print('[PieceSpriteComponent.onLoad] 棋子(${piece.label}) grid($gridX,$gridY) -> componentPos($componentPos) -> position($position)');
   }
 
   /// 加载棋子精灵
@@ -93,11 +90,6 @@ class PieceSpriteComponent extends PositionComponent {
     // 如果不可见，跳过绘制
     if (opacity <= 0) {
       return;
-    }
-
-    // Debug: 绘制一个红点在 (0, 0) 查看实际坐标系
-    if (gridX == 0 && gridY == 0) {
-      canvas.drawCircle(Offset.zero, 3, Paint()..color = const Color(0xFFFF0000));
     }
 
     // 保存canvas状态
@@ -258,7 +250,7 @@ class PieceSpriteComponent extends PositionComponent {
 
   /// 更新位置
   void updatePosition(int newX, int newY) {
-    final screenPos = gridSystem.gridToScreen(newX, newY);
-    position = Vector2(screenPos.dx, screenPos.dy);
+    final componentPos = gridSystem.gridToComponentCoord(newX, newY);
+    position = Vector2(componentPos.dx, componentPos.dy);
   }
 }

@@ -3,7 +3,7 @@
 
 import 'dart:ui';
 import 'package:flutter/material.dart' show Color;
-import 'piece_sprite_component.dart';
+import '../piece_sprite_component.dart';
 
 /// 熔化动画组件
 /// Rook吃子时，被吃棋子的熔化效果（像烧纸片一样从头到脚烧毁）

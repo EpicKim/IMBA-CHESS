@@ -12,7 +12,9 @@ import 'constants.dart';
 /// 2. 支持棋盘翻转（本地玩家视角）
 /// 3. 判断点击是否在棋盘范围内
 class GridSystem {
-  /// 棋盘绘制区域的偏移量（左上角坐标）
+  /// 棋盘绘制区域的偏移量（已废弃，仅用于兼容性）
+  /// 注意：BoardSpriteComponent 的左上角就是第一个网格线交叉点，不需要额外偏移
+  @Deprecated('不再使用，保留仅为兼容')
   Offset boardOffset;
 
   /// 每个格子的大小
@@ -45,17 +47,14 @@ class GridSystem {
   /// 屏幕坐标转换为网格坐标
   ///
   /// 参数:
-  /// - screenX, screenY: 屏幕坐标
+  /// - screenX, screenY: 屏幕坐标（相对于 BoardSpriteComponent 左上角）
   ///
   /// 返回: 网格坐标 (x, y)，如果不在棋盘范围内则返回 null
   ({int x, int y})? screenToGrid(double screenX, double screenY) {
-    // 转换为相对于棋盘左上角的坐标
-    final relativeX = screenX - boardOffset.dx;
-    final relativeY = screenY - boardOffset.dy;
-
-    // 转换为网格坐标
-    var gridX = (relativeX / cellSize).round();
-    var gridY = (relativeY / cellSize).round();
+    // BoardSpriteComponent 左上角就是第一个交叉点，无需减去 boardOffset
+    // 直接转换为网格坐标
+    var gridX = (screenX / cellSize).round();
+    var gridY = (screenY / cellSize).round();
 
     // 如果本地玩家是黑方，需要翻转坐标
     if (localPlayerSide == Side.black) {
@@ -71,12 +70,16 @@ class GridSystem {
     return (x: gridX, y: gridY);
   }
 
-  /// 网格坐标转换为屏幕坐标（棋子中心点）
+  /// 网格坐标转换为屏幕坐标（网格线交叉点，即棋子中心点）
+  ///
+  /// 中国象棋的棋子放在网格线的交叉点上，所以：
+  /// - 网格 (0,0) 对应第一个交叉点，位置是 boardOffset
+  /// - 网格 (x,y) 对应的交叉点位置是 boardOffset + (x * cellSize, y * cellSize)
   ///
   /// 参数:
   /// - gridX, gridY: 网格坐标
   ///
-  /// 返回: 屏幕坐标
+  /// 返回: 屏幕坐标（网格线交叉点位置，相对于 BoardSpriteComponent 左上角）
   Offset gridToScreen(int gridX, int gridY) {
     // 如果本地玩家是黑方，需要翻转坐标
     var displayX = gridX;
@@ -87,43 +90,39 @@ class GridSystem {
       displayY = BoardConstants.boardHeight - 1 - gridY;
     }
 
-    // 计算屏幕坐标（格子中心点）
-    // 包含 boardOffset，用于 CustomPainter 和网格线绘制
-    final screenX = boardOffset.dx + displayX * cellSize;
-    final screenY = boardOffset.dy + displayY * cellSize;
+    // 计算屏幕坐标（网格线交叉点）
+    // BoardSpriteComponent 的左上角 (0,0) 就是第一个网格线交叉点
+    // 每个格子的交叉点间距是 cellSize
+    final screenX = displayX * cellSize;
+    final screenY = displayY * cellSize;
 
     return Offset(screenX, screenY);
   }
 
   /// 网格坐标转换为组件内坐标（用于Flame子组件）
   ///
-  /// 与 gridToScreen 的区别：
-  /// - gridToScreen: 包含 boardOffset，用于 CustomPainter 绘制
-  /// - gridToComponentCoord: 不包含 boardOffset，用于 Flame 子组件的 position
+  /// 【架构说明】
+  /// BoardSpriteComponent:
+  ///   - position: 在 Flame 世界中的居中位置
+  ///   - size: 棋盘总尺寸（网格尺寸）
+  ///   - anchor: Anchor.topLeft
+  ///   - 左上角 (0,0) 就是第一个网格线交叉点
+  ///   - 子组件（棋子、光圈）的 position 相对于它的左上角
+  ///
+  /// 坐标系统：
+  ///   - 网格 (0,0) 对应的子组件 position 是 (0, 0)
+  ///   - 网格 (x,y) 对应的子组件 position 是 (x * cellSize, y * cellSize)
+  ///
+  /// 注：棋子的 anchor = Anchor.center，所以 position 指向棋子中心，正好和网格线交叉点对齐。
   ///
   /// 参数:
   /// - gridX, gridY: 网格坐标
   ///
-  /// 返回: 组件内坐标（相对于父组件左上角）
+  /// 返回: 组件内坐标（相对于父组件左上角，用于子组件的 position）
   Offset gridToComponentCoord(int gridX, int gridY) {
-    // 如果本地玩家是黑方，需要翻转坐标
-    var displayX = gridX;
-    var displayY = gridY;
-
-    if (localPlayerSide == Side.black) {
-      displayX = BoardConstants.boardWidth - 1 - gridX;
-      displayY = BoardConstants.boardHeight - 1 - gridY;
-    }
-
-    // ✅ 关键：不加 boardOffset！
-    // 因为 BoardSpriteComponent 的子组件 position 是相对于父组件 (0, 0) 的
-    // 而 BoardSpriteComponent 在绘制时，canvas 的 (0, 0) 就是它的左上角
-    // 网格线绘制时使用 gridToScreen()，它会加上 boardOffset
-    // 所以子组件的 position 也应该加上 boardOffset 才能和网格线对齐
-    final screenX = boardOffset.dx + displayX * cellSize;
-    final screenY = boardOffset.dy + displayY * cellSize;
-
-    return Offset(screenX, screenY);
+    // 直接使用 gridToScreen，因为它已经返回了正确的相对坐标
+    // （相对于 BoardSpriteComponent 左上角）
+    return gridToScreen(gridX, gridY);
   }
 
   /// 检查屏幕坐标是否在棋盘范围内
@@ -179,8 +178,8 @@ class GridSystem {
   /// 返回: 棋盘的屏幕边界矩形
   Rect getBoardBounds() {
     return Rect.fromLTWH(
-      boardOffset.dx,
-      boardOffset.dy,
+      0,
+      0,
       BoardConstants.boardWidth * cellSize,
       BoardConstants.boardHeight * cellSize,
     );
