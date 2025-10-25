@@ -2,7 +2,7 @@
 // 功能：管理所有精灵组件，接收Provider状态更新
 
 import 'package:flame/game.dart';
-import 'package:flutter/material.dart' show Offset, Color;
+import 'package:flutter/material.dart' show Color;
 import '../game_provider/game_provider.dart';
 import '../game_provider/game_state.dart';
 import '../models/board.dart';
@@ -28,7 +28,6 @@ class ChessFlameGame extends FlameGame {
 
   // 坐标系统（立即初始化，避免 LateInitializationError）
   GridSystem gridSystem = GridSystem(
-    boardOffset: const Offset(40, 40),
     cellSize: 60.0,
   );
 
@@ -241,9 +240,6 @@ class ChessFlameGame extends FlameGame {
   /// 同步所有棋子的位置（当cellSize变化时调用）
   void _syncPiecesPosition() {
     if (boardSprite == null) return;
-
-    print('[ChessFlameGame] 同步棋子位置... cellSize=${gridSystem.cellSize}, boardOffset=${gridSystem.boardOffset}');
-    print('[ChessFlameGame] BoardSprite position=${boardSprite!.position}, size=${boardSprite!.size}, anchor=${boardSprite!.anchor}');
 
     var count = 0;
     // 更新所有现有棋子的位置

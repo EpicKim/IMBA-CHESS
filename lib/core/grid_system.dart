@@ -12,11 +12,6 @@ import 'constants.dart';
 /// 2. 支持棋盘翻转（本地玩家视角）
 /// 3. 判断点击是否在棋盘范围内
 class GridSystem {
-  /// 棋盘绘制区域的偏移量（已废弃，仅用于兼容性）
-  /// 注意：BoardSpriteComponent 的左上角就是第一个网格线交叉点，不需要额外偏移
-  @Deprecated('不再使用，保留仅为兼容')
-  Offset boardOffset;
-
   /// 每个格子的大小
   double cellSize;
 
@@ -26,10 +21,8 @@ class GridSystem {
   /// 构造函数
   ///
   /// 参数:
-  /// - boardOffset: 棋盘绘制区域的左上角坐标
   /// - cellSize: 每个格子的大小
   GridSystem({
-    required this.boardOffset,
     required this.cellSize,
   });
 

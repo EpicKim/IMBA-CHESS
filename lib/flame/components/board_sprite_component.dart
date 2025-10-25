@@ -109,7 +109,7 @@ class BoardSpriteComponent extends PositionComponent with TapCallbacks {
   /// 绘制棋盘背景
   void _drawBackground(Canvas canvas) {
     final paint = Paint()
-      ..color = BoardUIConfig.boardBackgroundColor
+      ..color = const Color.fromARGB(255, 189, 168, 230)
       ..style = PaintingStyle.fill;
 
     // 棋盘占满整个组件
