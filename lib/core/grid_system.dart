@@ -13,10 +13,10 @@ import 'constants.dart';
 /// 3. 判断点击是否在棋盘范围内
 class GridSystem {
   /// 棋盘绘制区域的偏移量（左上角坐标）
-  final Offset boardOffset;
+  Offset boardOffset;
 
   /// 每个格子的大小
-  final double cellSize;
+  double cellSize;
 
   /// 本地玩家阵营（用于棋盘翻转）
   Side? localPlayerSide;
@@ -88,6 +88,38 @@ class GridSystem {
     }
 
     // 计算屏幕坐标（格子中心点）
+    // 包含 boardOffset，用于 CustomPainter 和网格线绘制
+    final screenX = boardOffset.dx + displayX * cellSize;
+    final screenY = boardOffset.dy + displayY * cellSize;
+
+    return Offset(screenX, screenY);
+  }
+
+  /// 网格坐标转换为组件内坐标（用于Flame子组件）
+  ///
+  /// 与 gridToScreen 的区别：
+  /// - gridToScreen: 包含 boardOffset，用于 CustomPainter 绘制
+  /// - gridToComponentCoord: 不包含 boardOffset，用于 Flame 子组件的 position
+  ///
+  /// 参数:
+  /// - gridX, gridY: 网格坐标
+  ///
+  /// 返回: 组件内坐标（相对于父组件左上角）
+  Offset gridToComponentCoord(int gridX, int gridY) {
+    // 如果本地玩家是黑方，需要翻转坐标
+    var displayX = gridX;
+    var displayY = gridY;
+
+    if (localPlayerSide == Side.black) {
+      displayX = BoardConstants.boardWidth - 1 - gridX;
+      displayY = BoardConstants.boardHeight - 1 - gridY;
+    }
+
+    // ✅ 关键：不加 boardOffset！
+    // 因为 BoardSpriteComponent 的子组件 position 是相对于父组件 (0, 0) 的
+    // 而 BoardSpriteComponent 在绘制时，canvas 的 (0, 0) 就是它的左上角
+    // 网格线绘制时使用 gridToScreen()，它会加上 boardOffset
+    // 所以子组件的 position 也应该加上 boardOffset 才能和网格线对齐
     final screenX = boardOffset.dx + displayX * cellSize;
     final screenY = boardOffset.dy + displayY * cellSize;
 

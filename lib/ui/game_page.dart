@@ -5,8 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flame/game.dart';
 import '../game_provider/game_provider.dart';
-import 'board/board_widget.dart';
+import '../flame/chess_flame_game.dart';
 import 'panels/info_panel.dart';
 import 'panels/skill_panel.dart';
 import '../players/me_player.dart';
@@ -29,6 +30,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   late GameProvider _gameProvider;
+  late ChessFlameGame _flameGame;
 
   @override
   void initState() {
@@ -36,6 +38,10 @@ class _GamePageState extends State<GamePage> {
 
     // 初始化游戏Provider
     _gameProvider = GameProvider();
+
+    // 初始化Flame游戏
+    _flameGame = ChessFlameGame();
+    _flameGame.provider = _gameProvider;
 
     // 设置玩家（默认：AI vs 玩家）
     _gameProvider.setPlayers(
@@ -155,23 +161,20 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
 
-        // 中间：棋盘
+        // 中间：棋盘（使用Flame引擎）
         Expanded(
           flex: 5,
           child: Center(
             child: Consumer<GameProvider>(
               builder: (context, controller, _) {
-                return BoardWidget(
-                  board: controller.gameState.board,
-                  selectedPiece: controller.uiState.selectedPiece,
-                  legalMoves: controller.getSelectedPieceLegalMoves(),
-                  lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide: controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
-                  onTap: (x, y) => controller.handleBoardTap(x, y),
-                  gamePhase: controller.uiState.phase,
-                  selectedSkill: controller.uiState.selectedSkill,
-                  currentSide: controller.gameState.sideToMove,
+                // 同步状态到Flame游戏
+                _flameGame.syncFromProvider(
+                  controller.gameState,
+                  controller.uiState,
                 );
+
+                // 返回GameWidget
+                return GameWidget(game: _flameGame);
               },
             ),
           ),
@@ -214,23 +217,20 @@ class _GamePageState extends State<GamePage> {
   Widget _buildNarrowLayout() {
     return Column(
       children: [
-        // 棋盘
+        // 棋盘（使用Flame引擎）
         Expanded(
           flex: 3,
           child: Center(
             child: Consumer<GameProvider>(
               builder: (context, controller, _) {
-                return BoardWidget(
-                  board: controller.gameState.board,
-                  selectedPiece: controller.uiState.selectedPiece,
-                  legalMoves: controller.getSelectedPieceLegalMoves(),
-                  lastMove: controller.gameState.history.lastOrNull,
-                  localPlayerSide: controller.localPlayerSide, // 使用本地玩家阵营（棋盘会根据玩家阵营翻转）
-                  onTap: (x, y) => controller.handleBoardTap(x, y),
-                  gamePhase: controller.uiState.phase,
-                  selectedSkill: controller.uiState.selectedSkill,
-                  currentSide: controller.gameState.sideToMove,
+                // 同步状态到Flame游戏
+                _flameGame.syncFromProvider(
+                  controller.gameState,
+                  controller.uiState,
                 );
+
+                // 返回GameWidget
+                return GameWidget(game: _flameGame);
               },
             ),
           ),
