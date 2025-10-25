@@ -12,7 +12,6 @@ import 'board_painter.dart';
 
 /// 棋盘Widget配置常量
 class BoardWidgetConfig {
-  static const double boardPadding = 40.0; // 棋盘内边距
   static const double boardSizeRatio = 0.85; // 棋盘占可用空间的比例
 }
 
@@ -108,8 +107,8 @@ class _BoardWidgetState extends State<BoardWidget> with SingleTickerProviderStat
 
   /// 计算棋盘实际尺寸（格子大小 × 格子数量 + 内边距）
   Size _calculateBoardSize(double cellSize) {
-    final width = BoardConstants.boardWidth * cellSize + BoardWidgetConfig.boardPadding * 2;
-    final height = BoardConstants.boardHeight * cellSize + BoardWidgetConfig.boardPadding * 2;
+    final width = BoardConstants.boardWidth * cellSize;
+    final height = BoardConstants.boardHeight * cellSize;
     return Size(width, height);
   }
 
