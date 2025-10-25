@@ -269,6 +269,8 @@ class GameProvider extends ChangeNotifier {
     final movingSide = _gameState.sideToMove;
     final movingPlayer = getPlayerBySide(movingSide);
 
+    print('[GameProvider] ${movingSide == Side.red ? "红方" : "黑方"} 执行移动: ${move.from.x},${move.from.y} -> ${move.to.x},${move.to.y}');
+
     // 应用移动
     _gameState = _gameState.applyMove(move);
 
@@ -293,13 +295,16 @@ class GameProvider extends ChangeNotifier {
 
     // 标记走棋方已完成下棋
     _movePlayedThisRound[movingSide] = true;
+    print('[GameProvider] 标记${movingSide == Side.red ? "红方" : "黑方"}已完成下棋，红方:${_movePlayedThisRound[Side.red]}, 黑方:${_movePlayedThisRound[Side.black]}');
 
     // 检查是否双方都走完了
     if (_movePlayedThisRound[Side.red]! && _movePlayedThisRound[Side.black]!) {
       // 双方都走完了，准备进入新一轮技能选择
+      print('[GameProvider] 双方都走完了，准备进入新一轮技能选择');
       _prepareNextRound();
     } else {
       // 还有玩家未走棋，切换到下一个玩家
+      print('[GameProvider] 切换到下一个玩家，当前sideToMove: ${_gameState.sideToMove == Side.red ? "红方" : "黑方"}');
       _switchToNextPlayer();
     }
   }
@@ -371,9 +376,9 @@ class GameProvider extends ChangeNotifier {
       );
     }
 
-    // 更新UI显示技能显示阶段
+    // 更新UI显示技能显示阶段（注意：这里应该是skillReveal，不是playing）
     _uiState = _uiState.copyWith(
-      phase: TurnPhase.playing,
+      phase: TurnPhase.skillReveal,
       message: '双方技能已显示！',
     );
     notifyListeners();
@@ -475,16 +480,42 @@ class GameProvider extends ChangeNotifier {
   void _requestPlayerMove() async {
     if (currentPlayer == null) return;
 
+    final requestId = DateTime.now().millisecondsSinceEpoch;
+    final player = currentPlayer!;
+    print('[GameProvider] _requestPlayerMove 被调用(ID:$requestId)，当前玩家: ${_gameState.sideToMove == Side.red ? "红方" : "黑方"}');
+
+    // 防护：只在下棋阶段才能请求走棋
+    if (_turnPhase != TurnPhase.playing) {
+      print('[GameProvider] 警告：当前不在下棋阶段($_turnPhase)，无法请求走棋');
+      return;
+    }
+
+    // 防护：如果该玩家已经走完了，不再请求
+    final currentSide = _gameState.sideToMove;
+    if (_movePlayedThisRound[currentSide] == true) {
+      print('[GameProvider] 警告：${currentSide == Side.red ? "红方" : "黑方"}已经走过了，不能再走');
+      return;
+    }
+
     // 标记正在等待玩家操作
     _isWaitingForPlayer = true;
     notifyListeners();
 
+    print('[GameProvider] 开始等待${currentSide == Side.red ? "红方" : "黑方"}走棋(ID:$requestId)...');
+
     try {
       // 调用玩家的play方法（本地玩家会等待UI，AI会自动计算）
-      final move = await currentPlayer!.play(_gameState);
+      final move = await player.play(_gameState);
 
-      if (move != null) {
+      print('[GameProvider] 玩家返回移动(ID:$requestId): ${move?.from.x},${move?.from.y} -> ${move?.to.x},${move?.to.y}');
+
+      // 对于本地玩家：move已经在UI中通过_handlePlayPhaseTap执行过了
+      // 这里不再重复执行，只是完成Future
+      // 对于AI玩家：需要执行move
+      if (move != null && !player.isMe) {
         _executeMove(move);
+      } else {
+        print('[GameProvider] 本地玩家的移动已在UI中执行，跳过重复执行');
       }
     } catch (e) {
       print('[GameProvider] 走棋出错: $e');
@@ -499,7 +530,9 @@ class GameProvider extends ChangeNotifier {
     // 注意：applyMove 已经切换了 sideToMove，所以这里不需要再切换
     // 使用帧回调确保当前帧完成渲染后再请求下一个玩家行动
     // 这样可以让UI先更新显示上一个玩家的移动，再开始AI思考
+    print('[GameProvider] _switchToNextPlayer 被调用，准备在帧回调中请求下一个玩家');
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      print('[GameProvider] 帧回调触发，准备调用_requestPlayerMove');
       _requestPlayerMove();
     });
   }
@@ -639,20 +672,19 @@ class GameProvider extends ChangeNotifier {
     // 通知玩家其技能已被选择（用于完成本地玩家的 Future）
     localPlayer?.notifySkillApplied(selectedSkill);
 
-    // 更新UI显示等待对方
-    _uiState = _uiState.copyWith(
-      phase: TurnPhase.playing,
-      availableSkills: [],
-      clearSelectedSkill: true,
-      message: '技能已选择！等待对方选择技能...',
-    );
-    notifyListeners();
-
     // 检查是否双方都选完了
     if (_skillSelectedThisRound[Side.red]! && _skillSelectedThisRound[Side.black]!) {
       // 双方都选完了，进入技能显示阶段
       _turnPhase = TurnPhase.skillReveal;
       _startSkillRevealPhase();
+    } else {
+      // 还有一方未选择，只更新message提示等待，不改变phase
+      _uiState = _uiState.copyWith(
+        message: '技能已选择！等待对方选择技能...',
+        availableSkills: [],
+        clearSelectedSkill: true,
+      );
+      notifyListeners();
     }
   }
 
