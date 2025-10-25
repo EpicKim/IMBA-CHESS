@@ -93,7 +93,7 @@ class ChessFlameGame extends FlameGame {
     }
 
     // 计算棋盘组件的尺寸（纯网格尺寸，无额外边距）
-    final boardWidth = BoardConstants.cols * cellSize - 100;
+    final boardWidth = BoardConstants.cols * cellSize;
     final boardHeight = BoardConstants.rows * cellSize;
 
     // 计算棋盘组件在Flame世界中的居中位置
