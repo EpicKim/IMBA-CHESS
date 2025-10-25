@@ -14,24 +14,44 @@ void main() async {
   // 初始化窗口管理器并设置窗口化最大
   await windowManager.ensureInitialized();
 
+  // 设置窗口选项：指定初始大小避免闪烁
   WindowOptions windowOptions = const WindowOptions(
-    center: true,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
+    size: Size(1600, 1000), // 设置初始窗口大小，与 ScreenUtilInit 设计稿尺寸一致
+    center: true, // 窗口居中显示
+    backgroundColor: Colors.transparent, // 设置透明背景避免白屏
+    skipTaskbar: false, // 显示在任务栏
+    titleBarStyle: TitleBarStyle.normal, // 标准标题栏
+    title: 'IMBA象棋', // 窗口标题
   );
 
+  // 等待窗口准备就绪后再显示，避免闪烁
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.maximize();
-    await windowManager.show();
-    await windowManager.focus();
+    await windowManager.show(); // 显示窗口
+    await windowManager.focus(); // 获取焦点
   });
 
   runApp(const ImbaChessApp());
 }
 
 /// 应用根组件
-class ImbaChessApp extends StatelessWidget {
+class ImbaChessApp extends StatefulWidget {
   const ImbaChessApp({super.key});
+
+  @override
+  State<ImbaChessApp> createState() => _ImbaChessAppState();
+}
+
+class _ImbaChessAppState extends State<ImbaChessApp> {
+  @override
+  void initState() {
+    super.initState();
+    // 延迟执行最大化，确保应用完全启动后再最大化
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 延迟 500ms 再最大化，确保所有初始化完成
+      await Future.delayed(const Duration(milliseconds: 500));
+      await windowManager.maximize(); // 窗口最大化
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

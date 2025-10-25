@@ -1,4 +1,4 @@
-# Miscellaneous
+﻿# Miscellaneous
 *.class
 *.log
 *.pyc
@@ -22,7 +22,7 @@ Thumbs.db
 .idea/
 
 # VS Code
-# 通常注释掉，如果你想保留IDE配置可以提交
+# 閫氬父娉ㄩ噴鎺夛紝濡傛灉浣犳兂淇濈暀IDE閰嶇疆鍙互鎻愪氦
 #.vscode/
 .vscode/settings.json
 .vscode/*.log
@@ -52,11 +52,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# ===== Android 相关 =====
-# 保留: android/ 文件夹的配置文件 (build.gradle, AndroidManifest.xml等)
-# 忽略: 构建产物、依赖、本地配置
+# ===== Android 鐩稿叧 =====
+# 淇濈暀: android/ 鏂囦欢澶圭殑閰嶇疆鏂囦欢 (build.gradle, AndroidManifest.xml绛?
+# 蹇界暐: 鏋勫缓浜х墿銆佷緷璧栥€佹湰鍦伴厤缃?
 
-# Android 本地配置和构建文件
+# Android 鏈湴閰嶇疆鍜屾瀯寤烘枃浠?
 android/local.properties
 android/key.properties
 android/.gradle/
@@ -69,15 +69,15 @@ android/captures/
 **/android/.externalNativeBuild
 **/android/.cxx
 
-# Android 签名文件（重要！不要提交）
+# Android 绛惧悕鏂囦欢锛堥噸瑕侊紒涓嶈鎻愪氦锛?
 *.jks
 *.keystore
 
-# ===== iOS/macOS 相关 =====
-# 保留: ios/ 和 macos/ 文件夹的配置文件
-# 忽略: Pods依赖、构建产物、用户特定文件
+# ===== iOS/macOS 鐩稿叧 =====
+# 淇濈暀: ios/ 鍜?macos/ 鏂囦欢澶圭殑閰嶇疆鏂囦欢
+# 蹇界暐: Pods渚濊禆銆佹瀯寤轰骇鐗┿€佺敤鎴风壒瀹氭枃浠?
 
-# iOS Pod 依赖 (通过 Podfile 管理，不需要提交整个Pods文件夹)
+# iOS Pod 渚濊禆 (閫氳繃 Podfile 绠＄悊锛屼笉闇€瑕佹彁浜ゆ暣涓狿ods鏂囦欢澶?
 **/ios/Pods/
 **/ios/.symlinks/
 **/ios/Flutter/Flutter.framework
@@ -86,23 +86,23 @@ android/captures/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
-# macOS Pod 依赖
+# macOS Pod 渚濊禆
 **/macos/Pods/
 **/macos/.symlinks/
 **/macos/Flutter/ephemeral/
 **/macos/Flutter/GeneratedPluginRegistrant.swift
 
-# Flutter 环境导出文件
+# Flutter 鐜瀵煎嚭鏂囦欢
 ios/Flutter/flutter_export_environment.sh
 macos/Flutter/flutter_export_environment.sh
 ios/Flutter/Flutter.podspec
 
-# Flutter ephemeral files (所有平台)
+# Flutter ephemeral files (鎵€鏈夊钩鍙?
 **/Flutter/ephemeral/
 **/Flutter/Generated.xcconfig
 **/Flutter/flutter_export_environment.sh
 
-# Xcode 用户特定文件
+# Xcode 鐢ㄦ埛鐗瑰畾鏂囦欢
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
 **/ios/**/*.moved-aside
@@ -118,7 +118,7 @@ ios/Flutter/Flutter.podspec
 **/macos/**/*.pbxuser
 **/macos/**/*.perspectivev3
 
-# Xcode 构建产物
+# Xcode 鏋勫缓浜х墿
 **/ios/DerivedData/
 **/ios/build/
 **/macos/build/
@@ -128,30 +128,30 @@ xcuserdata/
 .swiftpm/
 DerivedData/
 
-# Podfile.lock (有争议，建议提交以保证团队依赖一致性)
-# 如果你使用Cocoapods，建议保留Podfile.lock
-# 如果只是个人项目，可以忽略
+# Podfile.lock (鏈変簤璁紝寤鸿鎻愪氦浠ヤ繚璇佸洟闃熶緷璧栦竴鑷存€?
+# 濡傛灉浣犱娇鐢–ocoapods锛屽缓璁繚鐣橮odfile.lock
+# 濡傛灉鍙槸涓汉椤圭洰锛屽彲浠ュ拷鐣?
 #**/ios/Podfile.lock
 #**/macos/Podfile.lock
 
-# ===== Web 相关 =====
+# ===== Web 鐩稿叧 =====
 /web/*.js
 /web/*.js.map
 /web/*.part.js
 
-# ===== Linux 相关 =====
-# 保留: linux/ 文件夹的CMake配置和源文件
-# 忽略: 构建产物
+# ===== Linux 鐩稿叧 =====
+# 淇濈暀: linux/ 鏂囦欢澶圭殑CMake閰嶇疆鍜屾簮鏂囦欢
+# 蹇界暐: 鏋勫缓浜х墿
 /linux/flutter/ephemeral/
 /linux/build/
 
-# ===== Windows 相关 =====
-# 保留: windows/ 文件夹的CMake配置和源文件
-# 忽略: 构建产物和Visual Studio生成文件
+# ===== Windows 鐩稿叧 =====
+# 淇濈暀: windows/ 鏂囦欢澶圭殑CMake閰嶇疆鍜屾簮鏂囦欢
+# 蹇界暐: 鏋勫缓浜х墿鍜孷isual Studio鐢熸垚鏂囦欢
 /windows/flutter/ephemeral/
 /windows/build/
 
-# ===== CMake 相关 (Windows 和 Linux) =====
+# ===== CMake 鐩稿叧 (Windows 鍜?Linux) =====
 **/CMakeCache.txt
 **/CMakeFiles/
 **/cmake_install.cmake
@@ -160,7 +160,7 @@ DerivedData/
 **/.ninja_deps
 **/.ninja_log
 
-# ===== Visual Studio 相关 (Windows 开发) =====
+# ===== Visual Studio 鐩稿叧 (Windows 寮€鍙? =====
 **/.vs/
 *.user
 *.userosscache
@@ -174,58 +174,61 @@ DerivedData/
 *.VC.VC.opendb
 *.ipch
 
-# ===== 测试和覆盖率 =====
+# ===== 娴嬭瘯鍜岃鐩栫巼 =====
 coverage/
 *.lcov
 test/.test_coverage.dart
 
-# ===== 文档生成 =====
+# ===== 鏂囨。鐢熸垚 =====
 doc/api/
 
-# ===== 临时文件和缓存 =====
+# ===== 涓存椂鏂囦欢鍜岀紦瀛?=====
 *.tmp
 *.temp
 .cache/
 
-# Exceptions - 保留这些文件
+# Exceptions - 淇濈暀杩欎簺鏂囦欢
 !**/ios/.gitkeep
 !**/android/.gitkeep
 
-# ===== 项目特定 =====
-# 个人待办事项
+# ===== 椤圭洰鐗瑰畾 =====
+# 涓汉寰呭姙浜嬮」
 *.todo
 todo.md
 TODO.md
 
-# 本地环境配置
+# 鏈湴鐜閰嶇疆
 .env
 .env.local
 
-# 调试文件
+# 璋冭瘯鏂囦欢
 *.hprof
 
-# ===== 需要添加的文件 =====
-# Android 本地配置（包含本地SDK路径）
+# ===== 闇€瑕佹坊鍔犵殑鏂囦欢 =====
+# Android 鏈湴閰嶇疆锛堝寘鍚湰鍦癝DK璺緞锛?
 android/local.properties
 
-# iOS Flutter 生成的文件
+# iOS Flutter 鐢熸垚鐨勬枃浠?
 ios/Flutter/flutter_export_environment.sh
 ios/Flutter/Generated.xcconfig
 ios/Runner/GeneratedPluginRegistrant.h
 ios/Runner/GeneratedPluginRegistrant.m
 
-# macOS Flutter 生成的文件
+# macOS Flutter 鐢熸垚鐨勬枃浠?
 macos/Flutter/ephemeral/
 macos/Flutter/GeneratedPluginRegistrant.swift
 
-# 其他平台的 ephemeral 文件夹
+# 鍏朵粬骞冲彴鐨?ephemeral 鏂囦欢澶?
 linux/flutter/ephemeral/
 windows/flutter/ephemeral/
 
-# 生成的插件注册文件
+# 鐢熸垚鐨勬彃浠舵敞鍐屾枃浠?
 linux/flutter/generated_plugin_registrant.cc
 linux/flutter/generated_plugin_registrant.h
 linux/flutter/generated_plugins.cmake
 windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugin_registrant.h
+
+# 自动生成的文件
+pubspec.lock
 windows/flutter/generated_plugins.cmake

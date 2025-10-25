@@ -24,9 +24,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
+  // 创建 Flutter 窗口，初始大小设置为 1600x1000
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
+  Win32Window::Size size(1600, 1000); // 设置为与 Dart 代码中一致的大小
   if (!window.Create(L"imba_chess", origin, size)) {
     return EXIT_FAILURE;
   }
