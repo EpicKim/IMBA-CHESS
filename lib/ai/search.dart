@@ -168,8 +168,8 @@ class Search {
     // 增加节点计数
     nodesSearched++;
 
-    // 检查超时
-    if (_checkTimeout()) {
+    // 每100个节点检查一次超时（而非每个节点都检查）
+    if (nodesSearched % 100 == 0 && _checkTimeout()) {
       return 0;
     }
 
@@ -196,9 +196,21 @@ class Search {
       }
     }
 
-    // 达到搜索深度，进行静态评估
+    // 达到搜索深度，进行静态评估（减少静态搜索深度以提升性能）
     if (depth <= 0) {
-      return _quiescence(gameState, alpha, beta, side, 3);
+      return _quiescence(gameState, alpha, beta, side, 2); // 从3降低到2
+    }
+
+    // 早期胜负判断优化
+    // 检查游戏是否已经结束（一方没有king）
+    final opponentSide = side == Side.red ? Side.black : Side.red;
+    if (gameState.hasPlayerLost(opponentSide)) {
+      // 对手输了，我方获胜（极高分数，越快获胜越好）
+      return 900000 - (10 - depth) * 1000;
+    }
+    if (gameState.hasPlayerLost(side)) {
+      // 我方输了，对手获胜（极低分数，越晚输越好）
+      return -900000 + (10 - depth) * 1000;
     }
 
     // 检查游戏结束

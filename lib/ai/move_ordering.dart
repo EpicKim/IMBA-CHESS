@@ -5,15 +5,15 @@
 import '../models/move.dart';
 import '../game_provider/game_state.dart';
 import '../skills/skill_types.dart';
-import '../core/constants.dart';
+import 'evaluation.dart';
 
 /// 走法排序器
 ///
 /// 对走法进行启发式排序，提高Alpha-Beta剪枝效率
 class MoveOrdering {
   /// MVV-LVA（最有价值受害者 - 最低价值攻击者）价值表
+  /// （非king技能）
   static const Map<SkillType, int> captureValues = {
-    SkillType.king: 10000,
     SkillType.rook: 600,
     SkillType.cannon: 300,
     SkillType.knight: 300,
@@ -27,8 +27,7 @@ class MoveOrdering {
   /// 排序优先级：
   /// 1. PV走法（主要变化走法）
   /// 2. 吃子走法（MVV-LVA排序）
-  /// 3. 将军走法
-  /// 4. 其他走法
+  /// 3. 其他走法
   ///
   /// 参数:
   /// - moves: 待排序的走法列表
@@ -57,12 +56,8 @@ class MoveOrdering {
         score += _evaluateCapture(gameState, move);
       }
 
-      // 3. 将军走法
-      final newState = gameState.applyMove(move);
-      final opponentSide = gameState.sideToMove == Side.red ? Side.black : Side.red;
-      if (newState.isInCheck()) {
-        score += 5000;
-      }
+      // 3. 移除昂贵的将军检查以提升性能
+      // 将军走法会在搜索过程中自然被发现
 
       scoredMoves.add((move: move, score: score));
     }
@@ -76,6 +71,7 @@ class MoveOrdering {
   /// 评估吃子走法的价值（MVV-LVA）
   ///
   /// 优先吃价值高的棋子，使用价值低的棋子去吃
+  /// 使用动态king价值评估
   static int _evaluateCapture(GameState gameState, Move move) {
     // 获取被吃棋子
     final capturedPiece = gameState.board.get(move.to.x, move.to.y);
@@ -94,13 +90,23 @@ class MoveOrdering {
     // 计算被吃棋子的价值（受害者价值）
     int victimValue = 0;
     for (final skill in capturedPiece.skillsList) {
-      victimValue += captureValues[skill.typeId] ?? 0;
+      if (skill.typeId == SkillType.king) {
+        // 使用动态king价值
+        victimValue += Evaluator.getKingValue(gameState, capturedPiece.side);
+      } else {
+        victimValue += captureValues[skill.typeId] ?? 0;
+      }
     }
 
     // 计算攻击棋子的价值（攻击者价值）
     int attackerValue = 0;
     for (final skill in attackingPiece.skillsList) {
-      attackerValue += captureValues[skill.typeId] ?? 0;
+      if (skill.typeId == SkillType.king) {
+        // 使用动态king价值
+        attackerValue += Evaluator.getKingValue(gameState, attackingPiece.side);
+      } else {
+        attackerValue += captureValues[skill.typeId] ?? 0;
+      }
     }
 
     // MVV-LVA: 高价值受害者 - 低价值攻击者

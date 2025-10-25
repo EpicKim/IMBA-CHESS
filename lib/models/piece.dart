@@ -76,15 +76,24 @@ class Piece extends Equatable {
     // 创建新的技能列表
     final newSkillsList = List<Skill>.from(skillsList);
 
-    // 王技能插入首位
+    // King技能插入首位（因为需要显示为"帅"或"将"）
     if (skill.typeId == SkillType.king) {
       newSkillsList.insert(0, skill);
     } else {
       newSkillsList.add(skill);
     }
 
-    // 更新标签（如果当前无标签，使用新技能名称，根据阵营显示）
-    final newLabel = label ?? skill.getDisplayName(side);
+    // 更新标签
+    // 如果添加的是king技能，label必须更新为"帅"或"将"（因为king在首位）
+    // 如果当前无标签，使用新技能名称
+    String newLabel;
+    if (skill.typeId == SkillType.king) {
+      // King技能总是更新label为"帅"或"将"
+      newLabel = skill.getDisplayName(side);
+    } else {
+      // 其他技能：如果已有label则保持，否则使用新技能名称
+      newLabel = label ?? skill.getDisplayName(side);
+    }
 
     return copyWith(
       skillsList: newSkillsList,

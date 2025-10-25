@@ -24,17 +24,18 @@ class AIController {
   /// AI难度等级
   final int difficultyLevel;
 
-  /// 每步思考时间（毫秒）
+  /// 每步最大思考时间（毫秒）
+  /// AI会在此时间内通过迭代加深搜索尽可能多的深度
   final int thinkingTime;
 
   /// 构造函数
   ///
   /// 参数:
   /// - difficultyLevel: 难度等级（1-5），影响搜索深度
-  /// - thinkingTime: 每步思考时间（毫秒）
+  /// - thinkingTime: 每步最大思考时间（毫秒），而非固定时间
   AIController({
     this.difficultyLevel = 3,
-    this.thinkingTime = 1000, // 降低默认思考时间从3秒到1秒
+    this.thinkingTime = 1000, // 默认最大思考时间1秒
   });
 
   /// 选择最佳走法

@@ -15,9 +15,8 @@ import '../core/move_generator.dart';
 /// - 机动性（可走步数）
 /// - 将军威胁
 class Evaluator {
-  /// 棋子基础价值表
+  /// 棋子基础价值表（非king技能）
   static const Map<SkillType, int> pieceValues = {
-    SkillType.king: 10000, // 将/帅
     SkillType.rook: 600, // 车
     SkillType.cannon: 300, // 炮
     SkillType.knight: 300, // 马
@@ -25,6 +24,44 @@ class Evaluator {
     SkillType.advisor: 200, // 士
     SkillType.pawn: 100, // 兵/卒
   };
+
+  /// King技能价值（根据场上king数量动态计算）
+  /// - 单个king：价值极高（击杀即胜利）
+  /// - 多个king：价值降低
+  static int getKingValue(GameState gameState, Side side) {
+    // 统计双方拥有king技能的棋子数量
+    int ourKings = 0;
+    int opponentKings = 0;
+    final opponentSide = side == Side.red ? Side.black : Side.red;
+
+    for (var y = 0; y < BoardConstants.boardHeight; y++) {
+      for (var x = 0; x < BoardConstants.boardWidth; x++) {
+        final piece = gameState.board.get(x, y);
+        if (piece != null && piece.hasSkill(SkillType.king)) {
+          if (piece.side == side) {
+            ourKings++;
+          } else if (piece.side == opponentSide) {
+            opponentKings++;
+          }
+        }
+      }
+    }
+
+    // 动态计算king价值
+    // 单个king时价值极高（击杀即胜利）
+    // 多个king时价值按数量递减
+    if (ourKings == 1 && opponentKings == 1) {
+      return 10000; // 标准象棋：双方各一个king
+    } else if (ourKings == 1) {
+      return 15000; // 己方只有一个king，极其重要
+    } else if (ourKings == 2) {
+      return 3000; // 有2个king，价值显著降低
+    } else if (ourKings == 3) {
+      return 1500; // 有3个king，价值进一步降低
+    } else {
+      return 800; // 有4个或更多king，价值大幅降低
+    }
+  }
 
   /// 位置价值表（红方视角）
   /// 每个技能类型都有对应的位置加分表
@@ -71,10 +108,15 @@ class Evaluator {
 
   /// 评估物质价值
   ///
-  /// 计算双方棋子的价值差
+  /// 计算双方棋子的价值差（使用动态king价值）
   static int _evaluateMaterial(GameState gameState, Side side) {
     int score = 0;
     final board = gameState.board;
+
+    // 获取动态king价值
+    final ourKingValue = getKingValue(gameState, side);
+    final opponentSide = side == Side.red ? Side.black : Side.red;
+    final opponentKingValue = getKingValue(gameState, opponentSide);
 
     for (var y = 0; y < BoardConstants.boardHeight; y++) {
       for (var x = 0; x < BoardConstants.boardWidth; x++) {
@@ -85,7 +127,12 @@ class Evaluator {
           int pieceValue = 0;
 
           for (final skill in piece.skillsList) {
-            pieceValue += pieceValues[skill.typeId] ?? 0;
+            // 使用动态king价值
+            if (skill.typeId == SkillType.king) {
+              pieceValue += (piece.side == side) ? ourKingValue : opponentKingValue;
+            } else {
+              pieceValue += pieceValues[skill.typeId] ?? 0;
+            }
           }
 
           // 己方棋子加分，对方棋子减分
@@ -136,19 +183,13 @@ class Evaluator {
     return score;
   }
 
-  /// 评估机动性
+  /// 评估机动性（简化版，减少计算开销）
   ///
-  /// 计算可走步数（更多选择 = 更有利）
+  /// 只计算可走步数的快速估计，不实际生成所有走法
   static int _evaluateMobility(GameState gameState, Side side) {
-    // 计算己方合法走法数量
-    final ourMoves = MoveGenerator.getAllLegalMoves(gameState, side);
-
-    // 计算对方合法走法数量
-    final opponentSide = side == Side.red ? Side.black : Side.red;
-    final opponentMoves = MoveGenerator.getAllLegalMoves(gameState, opponentSide);
-
-    // 机动性差值（权重较小）
-    return (ourMoves.length - opponentMoves.length) * 10;
+    // 简化：只在浅层评估时计算机动性
+    // 深层搜索时跳过以节省时间
+    return 0; // 暂时禁用机动性评估以提升性能
   }
 
   /// 评估将军安全

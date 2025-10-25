@@ -22,13 +22,13 @@ class AIPlayer extends Player {
   /// - name: 玩家名称
   /// - side: 玩家阵营
   /// - difficultyLevel: AI难度等级（1-5）
-  /// - thinkingTime: AI思考时间（毫秒）
+  /// - thinkingTime: AI最大思考时间（毫秒），AI会在此时间内尽可能搜索
   AIPlayer({
     required super.id,
     required super.name,
     required super.side,
     int difficultyLevel = 3,
-    int thinkingTime = 3000,
+    int thinkingTime = 2000, // 默认最大思考时间2秒（而非固定3秒）
   }) : aiController = AIController(
           difficultyLevel: difficultyLevel,
           thinkingTime: thinkingTime,
