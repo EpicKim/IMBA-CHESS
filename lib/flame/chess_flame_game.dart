@@ -26,10 +26,11 @@ class ChessFlameGame extends FlameGame {
   // 游戏Provider（由外部注入）
   GameProvider? provider;
 
-  // 坐标系统（立即初始化，避免 LateInitializationError）
-  GridSystem gridSystem = GridSystem(
-    cellSize: 60.0,
-  );
+  // 坐标系统（使用默认值初始化，在onGameResize中更新cellSize）
+  GridSystem _gridSystem = GridSystem(cellSize: 60.0);
+
+  // 获取坐标系统
+  GridSystem get gridSystem => _gridSystem;
 
   // 精灵缓存
   final spriteCache = SpriteCache();
@@ -83,11 +84,8 @@ class ChessFlameGame extends FlameGame {
 
     print('[ChessFlameGame] 计算得到cellSize: $cellSize');
 
-    // 更新GridSystem的cellSize（不重新创建对象）
-    gridSystem.cellSize = cellSize;
-
-    // gridSystem.boardOffset 保持固定为(40, 40)，这是组件内部的边距
-    // 不需要修改，因为它只用于组件内部的坐标转换
+    // 更新GridSystem的cellSize
+    _gridSystem.cellSize = cellSize;
 
     // 如果有本地玩家阵营，应用翻转
     if (provider != null) {
